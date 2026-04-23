@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App CNH - Executive Update</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+.chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 40vh; max-height: 400px; min-height: 300px; }
+.gradient-text { background: linear-gradient(to right, #2563EB, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<nav class="bg-white shadow-md sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16">
+<div class="flex items-center">
+<span class="text-2xl font-bold text-blue-600">🚗 App CNH</span>
+<span class="ml-2 text-sm font-medium text-slate-500 px-2 py-1 bg-slate-100 rounded-full">PO & Tech Lead Dashboard</span>
+</div>
+</div>
+</div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+<header class="mb-12 text-center">
+<h1 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight"><span class="gradient-text">Atualização Estratégica e Tecnológica</span></h1>
+<p class="text-lg text-slate-600 max-w-3xl mx-auto">Alinhamento de produto baseando-se nas recentes movimentações legislativas, arquitetura cloud-native e diretrizes de UX/UI para o marketplace de instrução veicular.</p>
+</header>
+
+<section class="mb-16">
+<div class="bg-blue-900 rounded-2xl shadow-xl overflow-hidden">
+<div class="px-6 py-8 sm:p-10">
+<h2 class="text-3xl font-bold text-white mb-6">⚖️ Atualização Legislativa (Jan - Atual)</h2>
+<p class="text-blue-100 mb-6 text-lg">A documentação v0.1 citava uma "nova resolução do Contran". Como PO, trago a correção de rota: a dispensa de autoescolas tramita majoritariamente via <strong>Projeto de Lei (alteração do CTB)</strong>. O Contran atua na regulamentação posterior. As atualizações recentes focam na padronização técnica para integração.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-blue-800 rounded-xl p-6 border border-blue-700">
+<div class="text-3xl mb-4">🏛️</div>
+<h3 class="text-xl font-bold text-white mb-2">Avanço no Legislativo</h3>
+<p class="text-blue-200 text-sm">Projetos de Lei (como PL 6485/19 e PL 4474/20) ganharam tração em comissões do Senado/Câmara. O foco mudou para a figura do "Instrutor Independente Credenciado".</p>
+</div>
+<div class="bg-blue-800 rounded-xl p-6 border border-blue-700">
+<div class="text-3xl mb-4">🔐</div>
+<h3 class="text-xl font-bold text-white mb-2">Integração Gov.br / Senatran</h3>
+<p class="text-blue-200 text-sm">Diretrizes recentes de TI governamental exigem que a autenticação de identidade para serviços de trânsito utilize o padrão Gov.br (Prata/Ouro) para a validação biométrica primária.</p>
+</div>
+<div class="bg-blue-800 rounded-xl p-6 border border-blue-700">
+<div class="text-3xl mb-4">📡</div>
+<h3 class="text-xl font-bold text-white mb-2">Telemetria Obrigatória</h3>
+<p class="text-blue-200 text-sm">As minutas de regulamentação do Detran estipulam que o rastreamento GPS não é apenas de rota, mas inclui telemetria básica (velocidade, frenagem brusca) para auditar a qualidade da aula.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="bg-white rounded-2xl shadow-md p-8 border border-slate-200">
+<h2 class="text-2xl font-bold text-slate-800 mb-4">💸 A Proposta de Valor: Redução de Custo</h2>
+<p class="text-slate-600 mb-6">O principal atrativo para o aluno é financeiro. Ao remover a estrutura física do CFC, repassamos o valor diretamente ao instrutor autônomo, reduzindo o custo final em aproximadamente 80%.</p>
+<div class="chart-container">
+<canvas id="costChart"></canvas>
+</div>
+</div>
+
+<div class="bg-white rounded-2xl shadow-md p-8 border border-slate-200">
+<h2 class="text-2xl font-bold text-slate-800 mb-4">👥 UX/UI e Demografia do App</h2>
+<p class="text-slate-600 mb-6">A interface deve ser acessível. Nossa projeção indica que, embora jovens sejam a maioria, há um público significativo de pessoas 30+ buscando habilitação tardia atraídas pelo baixo custo.</p>
+<div class="chart-container">
+<canvas id="demoChart"></canvas>
+</div>
+</div>
+</section>
+
+<section class="mb-16">
+<div class="bg-white rounded-2xl shadow-md p-8 border border-slate-200">
+<h2 class="text-2xl font-bold text-slate-800 mb-6">🛡️ Arquitetura de Compliance e Segurança Integrada</h2>
+<p class="text-slate-600 mb-8">Para operar legalmente como o elo entre aluno e instrutor, o fluxo de uma aula prática deve gerar um registro inalterável auditável pelo Detran.</p>
+
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 p-6 bg-slate-50 rounded-xl border border-slate-200">
+<div class="flex flex-col items-center w-full md:w-1/4 text-center">
+<div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3 shadow-inner">1</div>
+<h4 class="font-bold text-slate-800">Match & Agendamento</h4>
+<p class="text-sm text-slate-500 mt-2">Aluno escolhe instrutor baseado em rating e proximidade.</p>
+</div>
+
+<div class="hidden md:flex text-slate-400 text-2xl">➡️</div>
+<div class="flex md:hidden text-slate-400 text-2xl my-2">⬇️</div>
+
+<div class="flex flex-col items-center w-full md:w-1/4 text-center">
+<div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3 shadow-inner">2</div>
+<h4 class="font-bold text-slate-800">Validação Biométrica</h4>
+<p class="text-sm text-slate-500 mt-2">Check-in facial obrigatório para instrutor e aluno via API Gov.br.</p>
+</div>
+
+<div class="hidden md:flex text-slate-400 text-2xl">➡️</div>
+<div class="flex md:hidden text-slate-400 text-2xl my-2">⬇️</div>
+
+<div class="flex flex-col items-center w-full md:w-1/4 text-center">
+<div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3 shadow-inner">3</div>
+<h4 class="font-bold text-slate-800">Rastreamento GPS</h4>
+<p class="text-sm text-slate-500 mt-2">Captura de trajeto, velocidade e duração. Envio em tempo real.</p>
+</div>
+
+<div class="hidden md:flex text-slate-400 text-2xl">➡️</div>
+<div class="flex md:hidden text-slate-400 text-2xl my-2">⬇️</div>
+
+<div class="flex flex-col items-center w-full md:w-1/4 text-center">
+<div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl font-bold mb-3 shadow-inner">4</div>
+<h4 class="font-bold text-slate-800">Assinatura Digital</h4>
+<p class="text-sm text-slate-500 mt-2">Fechamento da aula com payload criptografado enviado ao Detran.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="mb-16">
+<h2 class="text-2xl font-bold text-slate-800 mb-6">⚙️ User Stories Técnicas e Próximos Passos</h2>
+<div class="overflow-x-auto bg-white rounded-2xl shadow-md border border-slate-200">
+<table class="min-w-full divide-y divide-slate-200">
+<thead class="bg-slate-50">
+<tr>
+<th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Épico / Funcionalidade</th>
+<th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">User Story (PO View)</th>
+<th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Benefício Primário</th>
+<th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status Tech</th>
+</tr>
+</thead>
+<tbody class="bg-white divide-y divide-slate-200">
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">Integração Biométrica</td>
+<td class="px-6 py-4 text-sm text-slate-600">Como Detran, quero garantir que a pessoa no carro é o aluno cadastrado, validando a face antes e depois da aula.</td>
+<td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Compliance & Anti-fraude</span></td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-medium">Arquitetura AWS Rekognition</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">Tracking GPS Contínuo</td>
+<td class="px-6 py-4 text-sm text-slate-600">Como Aluno e Instrutor, quero que minha rota seja gravada em nuvem para garantir que cumpri a carga horária em local seguro.</td>
+<td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Segurança Física / Auditoria</span></td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-medium">Avaliar Mapbox / Google Maps API</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">Split de Pagamentos</td>
+<td class="px-6 py-4 text-sm text-slate-600">Como Plataforma, quero reter minha comissão automaticamente no momento que o aluno paga a aula, repassando o resto ao instrutor.</td>
+<td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">Monetização Dinâmica</span></td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-medium">Integração Stripe / Mercado Pago</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">Gamificação e Rating</td>
+<td class="px-6 py-4 text-sm text-slate-600">Como Aluno, quero ver os instrutores com maior taxa de aprovação no Detran para fazer a melhor escolha.</td>
+<td class="px-6 py-4 whitespace-nowrap"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Marketplace Dynamics (Confiança)</span></td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-medium">Modelagem de Banco de Dados</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+</main>
+
+<footer class="bg-slate-900 py-8 mt-12 text-center text-slate-400 text-sm">
+<p>&copy; App CNH - Portal de Documentação Técnica e Produto</p>
+</footer>
+
+<script>
+function wrapLabel(label, maxLength) {
+if (label.length <= maxLength) return label;
+let words = label.split(' ');
+let lines = [];
+let currentLine = words[0];
+for (let i = 1; i < words.length; i++) {
+if (currentLine.length + words[i].length + 1 <= maxLength) {
+currentLine += ' ' + words[i];
+} else {
+lines.push(currentLine);
+currentLine = words[i];
+}
+}
+lines.push(currentLine);
+return lines;
+}
+
+const customTooltipConfig = {
+tooltip: {
+callbacks: {
+title: function(tooltipItems) {
+const item = tooltipItems[0];
+let label = item.chart.data.labels[item.dataIndex];
+if (Array.isArray(label)) {
+return label.join(' ');
+} else {
+return label;
+}
+}
+}
+}
+};
+
+const costCtx = document.getElementById('costChart').getContext('2d');
+new Chart(costCtx, {
+type: 'doughnut',
+data: {
+labels: [wrapLabel('Custo em Autoescola Tradicional', 16), wrapLabel('Custo estimado via App CNH', 16)],
+datasets: [{
+data: [2500, 500],
+backgroundColor: ['#94A3B8', '#10B981'],
+borderWidth: 0,
+hoverOffset: 4
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+cutout: '70%',
+plugins: {
+...customTooltipConfig,
+legend: { position: 'bottom', labels: { font: { family: "'Segoe UI', sans-serif" }, color: '#334155' } }
+}
+}
+});
+
+const demoCtx = document.getElementById('demoChart').getContext('2d');
+new Chart(demoCtx, {
+type: 'bar',
+data: {
+labels: [wrapLabel('Jovens Ingressantes (18 a 21 anos)', 16), wrapLabel('Adultos Jovens (22 a 30 anos)', 16), wrapLabel('Público Tardio (Acima de 31 anos)', 16)],
+datasets: [{
+label: 'Distribuição Esperada (%)',
+data: [60, 25, 15],
+backgroundColor: '#3B82F6',
+borderRadius: 6,
+borderWidth: 0
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+scales: {
+y: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { color: '#64748B' } },
+x: { grid: { display: false }, ticks: { color: '#64748B', autoSkip: false, maxRotation: 0, minRotation: 0 } }
+},
+plugins: {
+...customTooltipConfig,
+legend: { display: false }
+}
+}
+});
+</script>
+
+</body>
+</html>
