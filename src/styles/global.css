@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-paper: #f6f1e7;
+  --color-paper-soft: #efe7d6;
+  --color-ink: #1a1714;
+  --color-ink-soft: #4b443d;
+  --color-accent: #a8331f;
+  --color-rule: rgba(26, 23, 20, 0.12);
+
+  --font-serif: "Fraunces", "Source Serif 4", Georgia, ui-serif, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  body {
+    font-family: var(--font-serif);
+    font-feature-settings: "ss01", "ss02", "kern";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+  }
+}
+
+@utility dropcap {
+  float: left;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 5.25rem;
+  line-height: 0.85;
+  padding: 0.45rem 0.6rem 0 0;
+  color: var(--color-accent);
+  font-variation-settings: "SOFT" 50, "WONK" 1;
+}
+
+@utility rule {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  background-color: var(--color-ink);
+}

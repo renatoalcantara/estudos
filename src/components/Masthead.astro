@@ -1,0 +1,25 @@
+---
+interface Props {
+  issue: string;
+  date: string;
+  section: string;
+}
+
+const { issue, date, section } = Astro.props;
+---
+
+<header class="border-b border-rule">
+  <div
+    class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-5 font-sans text-[11px] uppercase tracking-[0.28em] text-ink-soft"
+  >
+    <span class="hidden md:inline">Edição {issue}</span>
+    <a href="/" class="font-serif text-2xl font-medium tracking-tight text-ink normal-case lowercase">
+      estudos<span class="text-accent">.</span>
+    </a>
+    <div class="flex items-center gap-4">
+      <span class="hidden sm:inline">{section}</span>
+      <span class="hidden sm:inline" aria-hidden="true">·</span>
+      <time>{date}</time>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  attribution?: string;
+}
+
+const { attribution } = Astro.props;
+---
+
+<blockquote class="my-16 border-l-2 border-accent pl-6 md:-ml-6 md:pl-10">
+  <p class="font-serif text-2xl italic leading-snug text-ink md:text-3xl">
+    <slot />
+  </p>
+  {
+    attribution && (
+      <footer class="mt-4 font-sans text-xs uppercase tracking-[0.28em] text-ink-soft">
+        — {attribution}
+      </footer>
+    )
+  }
+</blockquote>
