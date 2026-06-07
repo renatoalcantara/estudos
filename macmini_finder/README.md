@@ -45,6 +45,10 @@ playwright install chromium
 - **Modelo:** Mac mini M2 Pro = **A2816**. Se diz **A2686**, é M2 *base* → descartar.
 - **Suspeitos sinalizados:** preço muito abaixo da média, vendedor sem reputação,
   "só PIX" + pressa.
+- **Prioridade geográfica:** anúncios da **Grande Vitória / ES** (Vitória, Vila
+  Velha, Serra, Cariacica, Viana, Guarapari, Fundão) vão para o **topo** da tabela
+  e recebem a flag `Grande Vitoria/ES`; dentro de cada grupo, ordena por preço.
+  Edite a lista `GRANDE_VITORIA` no script para ajustar as cidades.
 - Orçamento de referência: R$ 5.500 (usado só para sinalizar, não filtra).
 
 ## Saída

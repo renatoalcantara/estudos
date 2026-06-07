@@ -33,11 +33,22 @@ ORCAMENTO_REF = 5500.0  # R$ de referencia (so para sinalizar, nao filtra)
 RAM_ALVO = 32
 SSD_MIN = 512
 
+# ---- Grande Vitoria / ES: prioridade geografica ----
+# Anuncios nessas cidades vao para o topo da tabela (e depois por preco).
+GRANDE_VITORIA = [
+    "vitoria", "vila velha", "serra", "cariacica", "viana",
+    "guarapari", "fundao", "espirito santo", "grande vitoria", " es ", "/es",
+]
+
 # ---- Fontes: query do search do Firecrawl (search ja traz conteudo) ----
+# OLX recebe varias buscas miradas na Grande Vitoria/ES.
 BUSCAS = [
     "Mac Mini M2 Pro 32GB usado site:mercadolivre.com.br",
-    "Mac Mini M2 Pro 32GB seminovo OLX Espirito Santo Vitoria",
     "Mac Mini M2 Pro 32GB recondicionado Back Market Brasil",
+    # OLX — Grande Vitoria / ES
+    "Mac Mini M2 Pro 32GB seminovo OLX Vitoria Espirito Santo",
+    "Mac Mini M2 Pro 32GB usado OLX Vila Velha Serra Cariacica",
+    "Mac Mini M2 Pro 32GB site:olx.com.br estado-es",
 ]
 
 # Schema do que queremos extrair de cada anuncio promissor (firecrawl extract)
@@ -127,6 +138,12 @@ def extrair_preco(txt):
     return min(precos) if precos else None
 
 
+def eh_grande_vitoria(item):
+    """True se o anuncio parece ser da Grande Vitoria / ES."""
+    alvo = f"{item.get('localizacao','')} {item.get('url','')}".lower()
+    return any(cidade in alvo for cidade in GRANDE_VITORIA)
+
+
 def suspeito(item):
     flags = []
     p = item.get("preco_brl")
@@ -175,13 +192,15 @@ def main():
         ram = it.get("ram_gb")
         ssd = it.get("ssd_gb") or 0
         if ram == RAM_ALVO and chip_ok and (ssd == 0 or ssd >= SSD_MIN):
-            it["_flags"] = suspeito(it)
+            it["_es"] = eh_grande_vitoria(it)
+            it["_flags"] = (["Grande Vitoria/ES"] if it["_es"] else []) + suspeito(it)
             aprovados.append(it)
         elif ram in (None, 0):
             ram_nao_conf.append(it)
         # ram == 16 ou chip nao-pro -> descartado silenciosamente
 
-    aprovados.sort(key=lambda x: x.get("preco_brl") or 9e9)
+    # Prioriza Grande Vitoria/ES; dentro de cada grupo, ordena por preco.
+    aprovados.sort(key=lambda x: (0 if x.get("_es") else 1, x.get("preco_brl") or 9e9))
 
     # ---- saida markdown ----
     out = ["# Mac Mini M2 Pro 32GB — resultados\n"]
