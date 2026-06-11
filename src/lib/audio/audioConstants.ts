@@ -9,11 +9,24 @@
  */
 export const FFT_SIZE = 8192
 
-/** Abaixo deste RMS tratamos como silêncio (não atualiza a nota). */
-export const RMS_GATE = 0.01
+/**
+ * Abaixo deste RMS tratamos como silêncio. Mantido baixo de propósito: uma corda
+ * tocada decai exponencialmente e continua identificável mesmo baixinha. A
+ * confiança (clareza) é independente de amplitude, então ela — não o volume — é
+ * quem filtra o ruído de fundo.
+ */
+export const RMS_GATE = 0.004
 
 /** Confiança mínima (correlação normalizada no período) para aceitar a leitura. */
-export const CLARITY_THRESHOLD = 0.9
+export const CLARITY_THRESHOLD = 0.85
+
+/**
+ * Janela de retenção: por quanto tempo a última leitura boa continua valendo
+ * depois que o som cai. Deixa a nota "ressoar" na tela para o usuário ler a
+ * afinação, em vez de sumir ao primeiro quadro fraco. Também evita resetar a
+ * suavização em micro-quedas.
+ */
+export const HOLD_MS = 2200
 
 /** Suavização: tamanho do histórico para o filtro de mediana. */
 export const SMOOTHING_HISTORY = 5

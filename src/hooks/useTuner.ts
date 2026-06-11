@@ -73,6 +73,7 @@ export function useTuner({
   const smootherRef = useRef(new FrequencySmoother())
   const inTuneRef = useRef(false)
   const inTuneCountRef = useRef(0)
+  const prevRmsRef = useRef(0)
   const [reading, setReading] = useState<TunerReading | null>(null)
 
   // Recomeça do zero ao trocar instrumento/modo.
@@ -88,11 +89,23 @@ export function useTuner({
       smootherRef.current.reset()
       inTuneRef.current = false
       inTuneCountRef.current = 0
+      prevRmsRef.current = 0
     }
   }, [silent])
 
   useEffect(() => {
     if (!raw || silent) return
+
+    // Ataque (corda recém-tocada): o volume sobe de repente. Reseta a suavização
+    // para saltar imediatamente para a nota nova, sem misturar com a anterior que
+    // ainda está no histórico (graças à janela de retenção, ela não foi limpa).
+    const isAttack = raw.rms > prevRmsRef.current * 1.7 && raw.rms > 0.02
+    prevRmsRef.current = raw.rms
+    if (isAttack) {
+      smootherRef.current.reset()
+      inTuneRef.current = false
+      inTuneCountRef.current = 0
+    }
 
     const freq = smootherRef.current.push(raw.frequency)
     const note = analyzeFrequency(freq, a4)

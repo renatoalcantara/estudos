@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { CLARITY_THRESHOLD, DETECT_INTERVAL_MS, RMS_GATE } from '../lib/audio/audioConstants'
+import {
+  CLARITY_THRESHOLD,
+  DETECT_INTERVAL_MS,
+  HOLD_MS,
+  RMS_GATE,
+} from '../lib/audio/audioConstants'
 import { computeRMS } from '../lib/audio/noiseGate'
 import { detectPitch } from '../lib/audio/pitchDetector'
 
@@ -16,8 +21,11 @@ export interface PitchDetectionState {
 
 /**
  * Laço de requestAnimationFrame que lê o domínio do tempo do analyser, aplica
- * gate de ruído e devolve a leitura crua. A última leitura é mantida quando há
- * silêncio (apenas `silent` muda), evitando piscar a interface.
+ * gate de ruído e devolve a leitura crua.
+ *
+ * Retenção (hold): o estado só vira "silent" depois de HOLD_MS sem nenhum quadro
+ * bom. Enquanto a nota ressoa (e por um tempo após), a leitura permanece estável
+ * na tela — isso resolve o problema de "captar por menos de 1s e parar".
  */
 export function usePitchDetection(
   analyser: AnalyserNode | null,
@@ -36,6 +44,7 @@ export function usePitchDetection(
     const buffer = new Float32Array(analyser.fftSize)
     let raf = 0
     let last = 0
+    let lastGood = 0
 
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop)
@@ -44,16 +53,21 @@ export function usePitchDetection(
 
       analyser.getFloatTimeDomainData(buffer)
       const rms = computeRMS(buffer)
-      if (rms < RMS_GATE) {
-        setSilent(true)
-        return
+
+      let good = false
+      if (rms >= RMS_GATE) {
+        const result = detectPitch(buffer, sampleRate)
+        if (result && result.clarity >= CLARITY_THRESHOLD) {
+          good = true
+          lastGood = t
+          setSilent(false)
+          setReading({ frequency: result.frequency, clarity: result.clarity, rms })
+        }
       }
 
-      const result = detectPitch(buffer, sampleRate)
-      if (result && result.clarity >= CLARITY_THRESHOLD) {
-        setSilent(false)
-        setReading({ frequency: result.frequency, clarity: result.clarity, rms })
-      } else {
+      // Sem quadro bom agora: só declara silêncio após a janela de retenção.
+      // Dentro dela, mantém a última leitura visível (silent permanece false).
+      if (!good && t - lastGood > HOLD_MS) {
         setSilent(true)
       }
     }
