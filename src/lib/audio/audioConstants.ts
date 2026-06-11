@@ -21,12 +21,18 @@ export const RMS_GATE = 0.004
 export const CLARITY_THRESHOLD = 0.85
 
 /**
- * Janela de retenção: por quanto tempo a última leitura boa continua valendo
- * depois que o som cai. Deixa a nota "ressoar" na tela para o usuário ler a
- * afinação, em vez de sumir ao primeiro quadro fraco. Também evita resetar a
- * suavização em micro-quedas.
+ * Janela de retenção curta: bridge para micro-quedas/dropouts do sinal. Mantida
+ * baixa porque o teto de persistência (MAX_PERSIST_MS) é quem controla quanto
+ * tempo a nota fica na tela.
  */
-export const HOLD_MS = 2200
+export const HOLD_MS = 1200
+
+/**
+ * Teto de persistência: a leitura fica na tela por no máximo ~2s a partir do
+ * início de cada toque. Repalhetar reinicia a contagem (afinar = tocar de novo),
+ * então ela só some ~2s depois do ÚLTIMO toque — sem ficar "presa" ressoando.
+ */
+export const MAX_PERSIST_MS = 2000
 
 /** Suavização: tamanho do histórico para o filtro de mediana. */
 export const SMOOTHING_HISTORY = 5

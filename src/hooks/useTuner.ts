@@ -89,6 +89,7 @@ export function useTuner({
     committedMidiRef.current = null
     candMidiRef.current = null
     candCountRef.current = 0
+    setReading(null)
   }
 
   // Recomeça do zero ao trocar instrumento/modo.

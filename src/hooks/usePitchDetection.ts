@@ -3,6 +3,7 @@ import {
   CLARITY_THRESHOLD,
   DETECT_INTERVAL_MS,
   HOLD_MS,
+  MAX_PERSIST_MS,
   RMS_GATE,
 } from '../lib/audio/audioConstants'
 import { computeRMS } from '../lib/audio/noiseGate'
@@ -23,9 +24,10 @@ export interface PitchDetectionState {
  * Laço de requestAnimationFrame que lê o domínio do tempo do analyser, aplica
  * gate de ruído e devolve a leitura crua.
  *
- * Retenção (hold): o estado só vira "silent" depois de HOLD_MS sem nenhum quadro
- * bom. Enquanto a nota ressoa (e por um tempo após), a leitura permanece estável
- * na tela — isso resolve o problema de "captar por menos de 1s e parar".
+ * Persistência: a leitura fica ativa por até MAX_PERSIST_MS (~2s) a partir do
+ * início de cada toque. Repalhetar (ataque) reinicia a janela, então a nota só
+ * some ~2s depois do último toque — nem curto demais, nem "preso" ressoando.
+ * HOLD_MS apenas faz a ponte de micro-quedas dentro de um toque.
  */
 export function usePitchDetection(
   analyser: AnalyserNode | null,
@@ -44,7 +46,11 @@ export function usePitchDetection(
     const buffer = new Float32Array(analyser.fftSize)
     let raf = 0
     let last = 0
-    let lastGood = 0
+    let lastGood = 0 // instante do último quadro bom
+    let onset = 0 // início do toque atual
+    let prevRms = 0
+    let active = false // exibindo leitura
+    let capped = false // suprimido após estourar a janela num toque sustentado
 
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop)
@@ -54,21 +60,43 @@ export function usePitchDetection(
       analyser.getFloatTimeDomainData(buffer)
       const rms = computeRMS(buffer)
 
-      let good = false
+      let result: ReturnType<typeof detectPitch> = null
       if (rms >= RMS_GATE) {
-        const result = detectPitch(buffer, sampleRate)
-        if (result && result.clarity >= CLARITY_THRESHOLD) {
-          good = true
-          lastGood = t
-          setSilent(false)
-          setReading({ frequency: result.frequency, clarity: result.clarity, rms })
-        }
+        const r = detectPitch(buffer, sampleRate)
+        if (r && r.clarity >= CLARITY_THRESHOLD) result = r
       }
 
-      // Sem quadro bom agora: só declara silêncio após a janela de retenção.
-      // Dentro dela, mantém a última leitura visível (silent permanece false).
-      if (!good && t - lastGood > HOLD_MS) {
-        setSilent(true)
+      const isAttack = !!result && rms > prevRms * 1.7 && rms > 0.02
+      prevRms = rms
+
+      if (result) {
+        const gap = t - lastGood > HOLD_MS // houve silêncio real antes deste quadro
+        lastGood = t
+        if (gap) capped = false // recomeço limpo após silêncio real
+
+        if (capped && !isAttack) {
+          // mesmo toque que já estourou a janela → segue suprimido
+        } else {
+          if (!active || isAttack || gap) {
+            onset = t // novo toque → reinicia a janela de persistência
+            active = true
+          }
+          if (t - onset > MAX_PERSIST_MS) {
+            // a janela de ~2s estourou neste toque sustentado → limpa a tela
+            active = false
+            capped = true
+            setSilent(true)
+          } else {
+            setReading({ frequency: result.frequency, clarity: result.clarity, rms })
+            setSilent(false)
+          }
+        }
+      } else if (t - lastGood > HOLD_MS) {
+        capped = false // silêncio real
+        if (active) {
+          active = false
+          setSilent(true)
+        }
       }
     }
 
