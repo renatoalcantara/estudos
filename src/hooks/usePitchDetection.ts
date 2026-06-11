@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
-  ATTACK_FLOOR,
-  ATTACK_RATIO,
   CLARITY_THRESHOLD,
   DETECT_INTERVAL_MS,
   HOLD_MS,
-  MAX_PERSIST_MS,
   RMS_GATE,
 } from '../lib/audio/audioConstants'
 import { computeRMS } from '../lib/audio/noiseGate'
@@ -26,11 +23,10 @@ export interface PitchDetectionState {
  * Laço de requestAnimationFrame que lê o domínio do tempo do analyser, aplica
  * gate de ruído e devolve a leitura crua.
  *
- * Persistência por "janela rearmável" (sem estado preso): cada palhetada — uma
- * borda de subida do volume, ou o primeiro som após silêncio — arma a exibição
- * por ~MAX_PERSIST_MS (2s). Passada a janela sem nova palhetada, a tela limpa,
- * mesmo que a corda ainda ressoe. Como tudo deriva de timestamps/bordas, um
- * toque novo sempre reativa e nunca trava.
+ * Modelo de persistência simples e robusto: enquanto chegam quadros bons a
+ * leitura é atualizada e NUNCA fica silenciosa — por isso não trava tocando em
+ * sequência nem ao trocar de corda. Só vira "silent" HOLD_MS depois do último
+ * quadro bom (a corda realmente se calou).
  */
 export function usePitchDetection(
   analyser: AnalyserNode | null,
@@ -50,9 +46,7 @@ export function usePitchDetection(
     const ctx = analyser.context as AudioContext
     let raf = 0
     let last = 0
-    let lastGood = 0 // instante do último quadro bom
-    let armUntil = 0 // exibe enquanto t <= armUntil
-    let prevRms = 0
+    let lastGood = 0
 
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop)
@@ -65,30 +59,18 @@ export function usePitchDetection(
       analyser.getFloatTimeDomainData(buffer)
       const rms = computeRMS(buffer)
 
-      let result: ReturnType<typeof detectPitch> = null
       if (rms >= RMS_GATE) {
         const r = detectPitch(buffer, sampleRate)
-        if (r && r.clarity >= CLARITY_THRESHOLD) result = r
-      }
-
-      const wasSilent = t - lastGood > HOLD_MS
-      const isOnset =
-        !!result && (wasSilent || (rms > prevRms * ATTACK_RATIO && rms > ATTACK_FLOOR))
-      prevRms = rms
-
-      if (result) {
-        lastGood = t
-        if (isOnset) armUntil = t + MAX_PERSIST_MS // (re)arma ~2s a cada palhetada
-        if (t <= armUntil) {
-          setReading({ frequency: result.frequency, clarity: result.clarity, rms })
+        if (r && r.clarity >= CLARITY_THRESHOLD) {
+          lastGood = t
+          setReading({ frequency: r.frequency, clarity: r.clarity, rms })
           setSilent(false)
-        } else {
-          // janela de ~2s expirou; aguarda nova palhetada para rearmar
-          setSilent(true)
+          return
         }
-      } else if (t - lastGood > HOLD_MS) {
-        setSilent(true)
       }
+
+      // Sem quadro bom: só silencia HOLD_MS depois do último quadro bom.
+      if (t - lastGood > HOLD_MS) setSilent(true)
     }
 
     raf = requestAnimationFrame(loop)

@@ -10,34 +10,27 @@
 export const FFT_SIZE = 8192
 
 /**
- * Abaixo deste RMS tratamos como silêncio. Mantido baixo de propósito: uma corda
- * tocada decai exponencialmente e continua identificável mesmo baixinha. A
- * confiança (clareza) é independente de amplitude, então ela — não o volume — é
- * quem filtra o ruído de fundo.
+ * Abaixo deste RMS tratamos como silêncio. Baixo o suficiente para acompanhar o
+ * decaimento da corda, mas alto o bastante para que a cauda quase inaudível pare
+ * de contar (senão a nota fica "presa" na tela por tempo demais).
  */
-export const RMS_GATE = 0.004
+export const RMS_GATE = 0.006
 
 /** Confiança mínima (correlação normalizada no período) para aceitar a leitura. */
 export const CLARITY_THRESHOLD = 0.85
 
 /**
- * Janela de retenção curta: bridge para micro-quedas/dropouts do sinal. Mantida
- * baixa porque o teto de persistência (MAX_PERSIST_MS) é quem controla quanto
- * tempo a nota fica na tela.
+ * Retenção: por quanto tempo a nota continua na tela DEPOIS que o som cai abaixo
+ * do gate. Enquanto a corda soa, chegam quadros bons e a leitura NUNCA é cortada
+ * (modelo simples por "último quadro bom" — não depende de detectar palhetadas,
+ * então não trava tocando em sequência nem ao trocar de corda). A nota só some
+ * ~HOLD_MS depois que a corda realmente se cala.
  */
-export const HOLD_MS = 1200
+export const HOLD_MS = 900
 
 /**
- * Teto de persistência: a leitura fica na tela por no máximo ~2s a partir do
- * início de cada toque. Repalhetar reinicia a contagem (afinar = tocar de novo),
- * então ela só some ~2s depois do ÚLTIMO toque — sem ficar "presa" ressoando.
- */
-export const MAX_PERSIST_MS = 2000
-
-/**
- * Detecção de ataque (palhetada): borda de subida do volume. Usada para
- * (re)armar a janela de persistência e para resetar a suavização. Comparar o
- * RMS atual com o anterior; precisa subir ATTACK_RATIO× e passar de ATTACK_FLOOR.
+ * Detecção de ataque (palhetada): borda de subida do volume. Usada para resetar
+ * a suavização e "saltar" para a nota nova rapidamente.
  */
 export const ATTACK_RATIO = 1.6
 export const ATTACK_FLOOR = 0.015
