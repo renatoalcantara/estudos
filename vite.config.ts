@@ -4,12 +4,12 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 /**
  * `base` é a ÚNICA fonte de verdade de onde o app é servido.
- *  - Web (GitHub Pages): /estudos/afinador/
+ *  - Web (Vercel): /   (servido na raiz do domínio)
  *  - Nativo (Capacitor): ./   (defina VITE_DEPLOY_TARGET=native ao gerar o bundle nativo)
  * Todo o resto (React Router, start_url do PWA, assets) deriva daqui via import.meta.env.BASE_URL.
  */
 const isNative = process.env.VITE_DEPLOY_TARGET === 'native'
-const base = isNative ? './' : '/estudos/afinador/'
+const base = isNative ? './' : '/'
 
 export default defineConfig({
   base,
@@ -28,8 +28,8 @@ export default defineConfig({
         orientation: 'portrait',
         background_color: '#0b0b0b',
         theme_color: '#0b0b0b',
-        start_url: isNative ? './' : '/estudos/afinador/',
-        scope: isNative ? './' : '/estudos/afinador/',
+        start_url: isNative ? './' : '/',
+        scope: isNative ? './' : '/',
         categories: ['music', 'utilities'],
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
