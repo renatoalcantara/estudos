@@ -27,7 +27,7 @@ export function TuningSelector({ tunings, value, onChange }: TuningSelectorProps
             onClick={() => onChange(t.id)}
             className={`shrink-0 rounded-full border px-4 py-1.5 text-xs font-medium transition duration-200 active:scale-95 ${
               active
-                ? 'border-text bg-text text-bg'
+                ? 'border-transparent bg-text text-bg elev-chip'
                 : 'border-border bg-surface text-text-soft hover:text-text'
             }`}
           >

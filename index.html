@@ -6,6 +6,25 @@
     <meta name="theme-color" content="#0b0b0b" />
     <meta name="description" content="Afinador de violão, guitarra, ukulele e baixo pelo microfone do celular." />
 
+    <!-- Frame-busting: se o app foi embutido num iframe (ex.: moldura de
+         "device" de um visualizador), assume a janela inteira para o site
+         aparecer sem moldura. Funciona quando o pai é da MESMA origem; em
+         visualizadores cross-origin o navegador bloqueia (vira no-op). Não
+         dispara em localhost para preservar o preview de desenvolvimento. -->
+    <script>
+      ;(function () {
+        try {
+          var host = location.hostname
+          var isLocal = host === 'localhost' || host === '127.0.0.1' || host === ''
+          if (!isLocal && window.top && window.self !== window.top) {
+            window.top.location.replace(window.self.location.href)
+          }
+        } catch (e) {
+          /* pai cross-origin — o navegador impede escapar do iframe */
+        }
+      })()
+    </script>
+
     <!-- Aplica o tema antes da primeira pintura para evitar flash (FOUC). -->
     <script>
       ;(function () {

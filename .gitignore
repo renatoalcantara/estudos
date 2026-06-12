@@ -22,3 +22,6 @@ pnpm-debug.log*
 # Capacitor (futuro)
 /android
 /ios
+
+# Playgrounds de design (scratch, não versionar)
+*-playground.html

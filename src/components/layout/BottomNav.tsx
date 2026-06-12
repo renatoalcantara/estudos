@@ -4,16 +4,23 @@ import { useSettings } from '../../context/SettingsContext'
 import type { TunerMode } from '../../hooks/useTuner'
 import { PATHS } from '../../routes/paths'
 
-function TunerIcon() {
+function GuitarIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 3v6m0 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm0 6v6"
+      <g
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.7"
         strokeLinecap="round"
-      />
-      <path d="M5 7v3M19 7v3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        strokeLinejoin="round"
+      >
+        {/* braço + headstock */}
+        <path d="m14 10 5.2-5.2" />
+        <path d="m18.4 3.6 2 2" />
+        {/* corpo em forma de 8 (violão) */}
+        <path d="M14 10c-1.5-1.5-3.9-1.4-5.4.1-.9.9-1 1.9-.7 2.8.3 1-.1 1.7-.8 2.4-1.5 1.5-1.6 3.9-.1 5.4s3.9 1.4 5.4-.1c.7-.7 1.4-1.1 2.4-.8.9.3 1.9.2 2.8-.7 1.5-1.5 1.6-3.9.1-5.4" />
+        {/* boca */}
+        <circle cx="11.2" cy="14.8" r="1.5" />
+      </g>
     </svg>
   )
 }
@@ -55,7 +62,7 @@ interface NavItem {
 }
 
 const ITEMS: NavItem[] = [
-  { key: 'instrument', label: 'Instrumento', icon: TunerIcon },
+  { key: 'instrument', label: 'Instrumento', icon: GuitarIcon },
   { key: 'chromatic', label: 'Cromático', icon: NoteIcon },
   { key: 'settings', label: 'Ajustes', icon: SettingsIcon },
 ]
@@ -65,9 +72,9 @@ const ITEMS: NavItem[] = [
  * MODO do afinador (estado em SettingsContext) — alternar não desmonta a tela do
  * afinador, então o microfone continua rodando. "Ajustes" é uma rota.
  *
- * Todos os itens mostram ícone + rótulo (ativos e inativos). A pílula clara é só
- * um FUNDO deslizante que destaca o ativo: ESCORREGA (left/width medidos do item
- * ativo) até o novo slot ao trocar de seção; o conteúdo fica nos botões por cima.
+ * Item ativo: pílula clara com ícone + rótulo; inativos são só ícones. A pílula
+ * carrega o próprio conteúdo e ESCORREGA (left/width medidos do item ativo) até
+ * o novo slot ao trocar de seção.
  */
 export function BottomNav() {
   const { mode, setMode } = useSettings()
@@ -78,6 +85,7 @@ export function BottomNav() {
 
   // Índice do item ativo (0: Instrumento, 1: Cromático, 2: Ajustes).
   const activeIndex = onSettings ? 2 : mode === 'chromatic' ? 1 : 0
+  const ActiveIcon = ITEMS[activeIndex].icon
 
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([])
   const [pill, setPill] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
@@ -113,16 +121,24 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="safe-bottom safe-x pointer-events-none px-4 pb-3 pt-2">
-      <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface/80 p-1.5 shadow-soft backdrop-blur-xl">
-        {/* Fundo deslizante que destaca o item ativo (sem conteúdo próprio). */}
+    <nav className="safe-x pointer-events-none pt-2 pb-[env(safe-area-inset-bottom)]">
+      {/* Folga inferior = exatamente o safe-area-inset (a safe area inteira):
+          rente ao fundo onde o inset é 0, e só o necessário acima do indicador
+          home no iOS. px-4 num wrapper separado porque, na mesma tag, o safe-x
+          (env=0 no portrait) sobrescreveria o padding. */}
+      <div className="px-4">
+        <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface p-1.5 shadow-soft">
+        {/* Pílula deslizante (índigo) com o conteúdo do item ativo. */}
         <div
           aria-hidden="true"
-          className={`absolute h-11 rounded-full bg-text ${
+          className={`absolute flex h-11 items-center gap-2 rounded-full bg-brand px-4 text-white shadow-[0_2px_12px_-2px_rgba(99,102,241,0.55)] ${
             ready ? 'transition-[left,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]' : ''
           }`}
           style={{ left: pill.left, width: pill.width }}
-        />
+        >
+          <ActiveIcon />
+          <span className="whitespace-nowrap text-sm font-semibold">{ITEMS[activeIndex].label}</span>
+        </div>
 
         {ITEMS.map((item, i) => {
           const active = i === activeIndex
@@ -133,16 +149,24 @@ export function BottomNav() {
               ref={(el) => (itemRefs.current[i] = el)}
               type="button"
               aria-current={active}
+              aria-label={item.label}
               onClick={() => select(i)}
-              className={`relative z-10 flex h-11 items-center justify-center gap-2 rounded-full px-4 transition-colors duration-200 active:scale-90 ${
-                active ? 'text-bg' : 'text-text-faint hover:text-text-soft'
+              className={`relative z-10 flex h-11 items-center justify-center rounded-full transition-colors duration-200 active:scale-90 ${
+                active ? 'gap-2 px-4 text-white' : 'w-11 text-text-faint hover:text-text'
               }`}
             >
               <Icon />
-              <span className="whitespace-nowrap text-sm font-semibold">{item.label}</span>
+              {/* Rótulo presente só no ativo, para reservar a largura que a pílula
+                  copia. Invisível: quem o exibe é a pílula por cima. */}
+              {active && (
+                <span className="whitespace-nowrap text-sm font-semibold opacity-0">
+                  {item.label}
+                </span>
+              )}
             </button>
           )
         })}
+        </div>
       </div>
     </nav>
   )

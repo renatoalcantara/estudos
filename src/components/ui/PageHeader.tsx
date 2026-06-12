@@ -7,6 +7,8 @@ interface PageHeaderProps {
   back?: boolean
   /** eyebrow em mono (estilo DESIGN.md) */
   eyebrow?: string
+  /** torna o título um botão (abre seleção de instrumento/afinação) */
+  onTitlePress?: () => void
 }
 
 function BackArrow() {
@@ -23,7 +25,21 @@ function BackArrow() {
   )
 }
 
-export function PageHeader({ title, back = false, eyebrow }: PageHeaderProps) {
+function ChevronDown() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M6 9l6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function PageHeader({ title, back = false, eyebrow, onTitlePress }: PageHeaderProps) {
   const navigate = useNavigate()
   return (
     <header className="flex items-center gap-2 px-4 pb-2 pt-1">
@@ -44,7 +60,18 @@ export function PageHeader({ title, back = false, eyebrow }: PageHeaderProps) {
               {eyebrow}
             </div>
           )}
-          <h1 className="text-2xl font-semibold tracking-display text-text">{title}</h1>
+          {onTitlePress ? (
+            <button
+              onClick={onTitlePress}
+              aria-haspopup="dialog"
+              className="-ml-1 flex items-center gap-1.5 rounded-lg px-1 text-2xl font-semibold tracking-display text-text transition-colors hover:text-text-soft active:scale-[0.98]"
+            >
+              {title}
+              <ChevronDown />
+            </button>
+          ) : (
+            <h1 className="text-2xl font-semibold tracking-display text-text">{title}</h1>
+          )}
         </div>
       </div>
       <div className="ml-auto">

@@ -76,6 +76,10 @@ export default {
           '0%': { opacity: '0', transform: 'scale(0.8)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
+        'sheet-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       animation: {
         'page-enter': 'page-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both',
@@ -85,6 +89,7 @@ export default {
         'in-tune-pulse': 'in-tune-pulse 1.3s ease-in-out infinite',
         'pulse-soft': 'pulse-soft 2.2s ease-in-out infinite',
         'pop-in': 'pop-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'sheet-up': 'sheet-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
       },
     },
   },
