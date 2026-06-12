@@ -3,6 +3,17 @@ import { FFT_SIZE, INPUT_GAIN } from '../lib/audio/audioConstants'
 
 export type MicState = 'idle' | 'requesting' | 'running' | 'denied' | 'error' | 'unsupported'
 
+/**
+ * Bypass de microfone em ambiente local: em vez de pedir permissão e ler o
+ * microfone, injeta um tom sintético (oscilador) direto no analisador. Toda a
+ * cadeia de detecção roda normalmente, então o afinador funciona sem mic nem
+ * instrumento — ideal para desenvolver a UI.
+ *
+ * Ligado por padrão em `npm run dev`. Para usar o microfone REAL em dev, rode
+ * com `VITE_FAKE_MIC=0`.
+ */
+const FAKE_MIC = import.meta.env.DEV && import.meta.env.VITE_FAKE_MIC !== '0'
+
 export interface MicHandle {
   state: MicState
   error: string | null
@@ -52,6 +63,9 @@ export function useMicrophone(): MicHandle {
   const wantRunningRef = useRef(false)
   const reacquiringRef = useRef(false)
   const reacquireRef = useRef<() => void>(() => {})
+  // Osciladores do sinal de teste (modo FAKE_MIC).
+  const oscRef = useRef<OscillatorNode | null>(null)
+  const lfoRef = useRef<OscillatorNode | null>(null)
 
   // Monta source + analyser num contexto e publica o analyser para os consumidores.
   const buildGraph = useCallback((stream: MediaStream, ctx: AudioContext) => {
@@ -77,7 +91,41 @@ export function useMicrophone(): MicHandle {
     }
   }, [])
 
+  // Monta um tom de teste (E2 dente-de-serra) com varredura lenta de ±35 cents,
+  // ligado direto ao analisador (sem saída de áudio — não toca alto-falante).
+  const buildFakeGraph = useCallback((ctx: AudioContext) => {
+    const node = ctx.createAnalyser()
+    node.fftSize = FFT_SIZE
+    node.smoothingTimeConstant = 0
+
+    const osc = ctx.createOscillator()
+    osc.type = 'sawtooth'
+    osc.frequency.value = 82.41 // E2
+
+    // LFO modulando o detune → o ponteiro passa de desafinado a afinado e volta.
+    const lfo = ctx.createOscillator()
+    lfo.frequency.value = 0.15
+    const lfoGain = ctx.createGain()
+    lfoGain.gain.value = 35 // ±35 cents
+    lfo.connect(lfoGain)
+    lfoGain.connect(osc.detune)
+
+    const gain = ctx.createGain()
+    gain.gain.value = 0.25
+    osc.connect(gain)
+    gain.connect(node)
+
+    osc.start()
+    lfo.start()
+    oscRef.current = osc
+    lfoRef.current = lfo
+
+    setAnalyser(node)
+    setSampleRate(ctx.sampleRate)
+  }, [])
+
   const reacquire = useCallback(async () => {
+    if (FAKE_MIC) return // sinal de teste não readquire microfone
     if (!wantRunningRef.current || reacquiringRef.current) return
     const AC = getAudioContextCtor()
     if (!AC || !navigator.mediaDevices?.getUserMedia) return
@@ -106,6 +154,10 @@ export function useMicrophone(): MicHandle {
 
   const stop = useCallback(() => {
     wantRunningRef.current = false
+    oscRef.current?.stop()
+    lfoRef.current?.stop()
+    oscRef.current = null
+    lfoRef.current = null
     streamRef.current?.getTracks().forEach((t) => t.stop())
     streamRef.current = null
     if (ctxRef.current && ctxRef.current.state !== 'closed') {
@@ -118,7 +170,30 @@ export function useMicrophone(): MicHandle {
 
   const start = useCallback(async () => {
     const AC = getAudioContextCtor()
-    if (!navigator.mediaDevices?.getUserMedia || !AC) {
+    if (!AC) {
+      setState('unsupported')
+      return
+    }
+
+    // Bypass local: usa o tom de teste em vez do microfone.
+    if (FAKE_MIC) {
+      setState('requesting')
+      setError(null)
+      wantRunningRef.current = true
+      try {
+        const ctx = new AC()
+        ctxRef.current = ctx
+        await ctx.resume().catch(() => {})
+        buildFakeGraph(ctx)
+        setState('running')
+      } catch {
+        setState('error')
+        setError('Falha ao iniciar o sinal de teste.')
+      }
+      return
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
       setState('unsupported')
       return
     }
@@ -147,7 +222,12 @@ export function useMicrophone(): MicHandle {
         setError(err?.message ?? 'Erro ao acessar o microfone.')
       }
     }
-  }, [buildGraph])
+  }, [buildGraph, buildFakeGraph])
+
+  // Modo bypass: inicia o sinal de teste sozinho (sem gesto nem permissão).
+  useEffect(() => {
+    if (FAKE_MIC) void start()
+  }, [start])
 
   // Ao voltar do segundo plano: retoma o contexto e readquire se a faixa morreu.
   useEffect(() => {
@@ -155,6 +235,7 @@ export function useMicrophone(): MicHandle {
       if (document.visibilityState !== 'visible' || !wantRunningRef.current) return
       const ctx = ctxRef.current
       if (ctx && ctx.state === 'suspended') void ctx.resume()
+      if (FAKE_MIC) return // sinal de teste não depende de faixa de microfone
       const track = streamRef.current?.getAudioTracks()[0]
       if (!track || track.readyState === 'ended') void reacquire()
     }

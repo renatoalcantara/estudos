@@ -1,0 +1,331 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Afinador · Accent Playground</title>
+<style>
+  :root {
+    --ui-bg: #0d0d0f;
+    --ui-panel: #161619;
+    --ui-line: #2a2a30;
+    --ui-text: #e6e6ea;
+    --ui-dim: #8a8a93;
+    --ui-accent: #f36458;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+  @media (max-width: 760px) { .wrap { grid-template-columns: 1fr; } }
+
+  /* ---- controls ---- */
+  .controls {
+    padding: 20px 18px 28px;
+    border-right: 1px solid var(--ui-line);
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+  .controls h1 { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--ui-dim); margin: 0 0 4px; }
+  .controls .sub { font-size: 12px; color: var(--ui-dim); margin: 0 0 20px; line-height: 1.5; }
+  .group { margin-bottom: 22px; }
+  .group > label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: var(--ui-dim); margin-bottom: 10px; }
+
+  .presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .swatch {
+    border: 1px solid var(--ui-line); background: var(--ui-panel);
+    border-radius: 10px; padding: 8px 6px; cursor: pointer; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    transition: border-color .15s, transform .1s;
+  }
+  .swatch:hover { transform: translateY(-1px); }
+  .swatch[data-on="1"] { border-color: var(--ui-text); }
+  .swatch .dot { width: 22px; height: 22px; border-radius: 50%; }
+  .swatch .nm { font-size: 10.5px; color: var(--ui-dim); }
+
+  .slider { margin-bottom: 14px; }
+  .slider .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .slider .row span:first-child { font-size: 12px; color: var(--ui-text); }
+  .slider .row span:last-child { font-size: 12px; color: var(--ui-dim); font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; }
+  input[type="range"] { width: 100%; accent-color: var(--ui-accent); }
+
+  .seg { display: inline-flex; border: 1px solid var(--ui-line); border-radius: 9px; overflow: hidden; }
+  .seg button { background: var(--ui-panel); color: var(--ui-dim); border: none; padding: 7px 14px; font-size: 12px; cursor: pointer; }
+  .seg button[data-on="1"] { background: var(--ui-text); color: var(--ui-bg); font-weight: 600; }
+
+  .hexline { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .hexline input { background: var(--ui-panel); border: 1px solid var(--ui-line); color: var(--ui-text); border-radius: 8px; padding: 6px 8px; width: 100px; font-family: ui-monospace, monospace; font-size: 12px; }
+  .hexline .chip { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--ui-line); }
+
+  /* ---- preview ---- */
+  .stage { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 20px; }
+  .phone {
+    width: 320px; border-radius: 30px; padding: 26px 22px 18px;
+    border: 1px solid; transition: background .2s, color .2s, border-color .2s;
+  }
+  .tuner { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+  .note { display: flex; align-items: flex-start; }
+  .note .letter { font-size: 64px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
+  .note .oct { font-size: 20px; font-weight: 500; opacity: .7; margin-left: 4px; margin-top: 5px; }
+  .meta { display: flex; align-items: baseline; gap: 12px; margin-top: 8px; }
+  .meta .solf { font-size: 15px; }
+  .meta .hz { font-family: ui-monospace, monospace; font-size: 13px; font-variant-numeric: tabular-nums; }
+
+  .gauge { width: 240px; margin: 6px 0; }
+  .cents { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 4px; }
+  .cents .val { font-family: ui-monospace, monospace; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .cents .status { font-size: 13px; font-weight: 500; }
+
+  /* ---- prompt ---- */
+  .promptbar { grid-column: 1 / -1; border-top: 1px solid var(--ui-line); padding: 16px 20px; background: var(--ui-panel); }
+  .promptbar .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .promptbar .head b { font-size: 12px; letter-spacing: .03em; text-transform: uppercase; color: var(--ui-dim); }
+  .promptbar pre { margin: 0; font-family: ui-monospace, monospace; font-size: 12.5px; line-height: 1.6; color: var(--ui-text); white-space: pre-wrap; }
+  .copy { background: var(--ui-accent); color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .copy:active { transform: scale(.97); }
+</style>
+
+<div class="wrap">
+  <!-- CONTROLS -->
+  <aside class="controls">
+    <h1>Accent Playground</h1>
+    <p class="sub">Teste a cor de destaque (<code>brand</code>) do afinador. O verde de "afinado" (<code>success</code>) é fixo.</p>
+
+    <div class="group">
+      <label>Presets</label>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="group">
+      <label>Accent customizado</label>
+      <div class="slider"><div class="row"><span>Matiz</span><span id="hL">14°</span></div><input type="range" id="h" min="0" max="360" value="6"></div>
+      <div class="slider"><div class="row"><span>Saturação</span><span id="sL">86%</span></div><input type="range" id="s" min="0" max="100" value="86"></div>
+      <div class="slider"><div class="row"><span>Luminosidade</span><span id="lL">65%</span></div><input type="range" id="l" min="0" max="100" value="65"></div>
+      <div class="hexline"><span class="chip" id="hexChip"></span><input id="hex" value="#f36458"></div>
+    </div>
+
+    <div class="group">
+      <label>Tema</label>
+      <div class="seg" id="theme">
+        <button data-v="dark" data-on="1">Escuro</button>
+        <button data-v="light">Claro</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <label>Estado da leitura</label>
+      <div class="slider"><div class="row"><span>Desvio (cents)</span><span id="cL">−18 ¢</span></div><input type="range" id="c" min="-50" max="50" value="-18"></div>
+      <div class="seg" id="active">
+        <button data-v="1" data-on="1">Com sinal</button>
+        <button data-v="0">Silêncio</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PREVIEW -->
+  <main class="stage">
+    <div class="phone" id="phone">
+      <div class="tuner">
+        <div class="note" id="note">
+          <span class="letter">E</span><span class="oct">2</span>
+        </div>
+        <div class="meta">
+          <span class="solf" id="solf">Mi</span>
+          <span class="hz" id="hz">82.4 Hz</span>
+        </div>
+
+        <svg class="gauge" id="gauge" viewBox="0 0 200 116" role="img" aria-label="Medidor"></svg>
+
+        <div class="cents">
+          <span class="val" id="centsVal">−18 ¢</span>
+          <span class="status" id="status">Muito grave · aperte a corda</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PROMPT -->
+  <div class="promptbar">
+    <div class="head"><b>Prompt</b><button class="copy" id="copy">Copiar prompt</button></div>
+    <pre id="prompt"></pre>
+  </div>
+</div>
+
+<script>
+// ---------- tokens do projeto (index.css) ----------
+const THEME = {
+  dark:  { bg:'#0b0b0b', text:'#ffffff', soft:'#b9b9b9', faint:'#797979', border:'#353535' },
+  light: { bg:'#ffffff', text:'#0b0b0b', soft:'#505b6c', faint:'#797979', border:'#ededed' },
+};
+const SUCCESS = '#37cd84'; // fixo (ACCENT.success)
+
+const PRESETS = [
+  { nm:'Coral (atual)', hex:'#f36458' },
+  { nm:'Âmbar',         hex:'#f5a623' },
+  { nm:'Esmeralda',     hex:'#2ec27e' },
+  { nm:'Oceano',        hex:'#2f9be0' },
+  { nm:'Índigo',        hex:'#6366f1' },
+  { nm:'Magenta',       hex:'#e64ca3' },
+];
+
+const DEFAULTS = { accent:'#f36458', theme:'dark', cents:-18, active:true };
+const state = { ...DEFAULTS };
+
+// ---------- cor: helpers ----------
+function hslToHex(h,s,l){
+  s/=100; l/=100;
+  const k=n=>(n+h/30)%12, a=s*Math.min(l,1-l);
+  const f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));
+  const t=x=>Math.round(255*x).toString(16).padStart(2,'0');
+  return `#${t(f(0))}${t(f(8))}${t(f(4))}`;
+}
+function hexToHsl(hex){
+  let r=parseInt(hex.slice(1,3),16)/255, g=parseInt(hex.slice(3,5),16)/255, b=parseInt(hex.slice(5,7),16)/255;
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h=0,s=0,l=(mx+mn)/2;
+  if(mx!==mn){const d=mx-mn; s=l>.5?d/(2-mx-mn):d/(mx+mn);
+    h = mx===r ? (g-b)/d+(g<b?6:0) : mx===g ? (b-r)/d+2 : (r-g)/d+4; h*=60;}
+  return { h:Math.round(h), s:Math.round(s*100), l:Math.round(l*100) };
+}
+const isHex = v => /^#[0-9a-fA-F]{6}$/.test(v);
+
+// ---------- gauge (geometria idêntica ao TunerGauge.tsx) ----------
+const PIVOT=100, RADIUS=84, MAX_ANGLE=70, TICKS=[-50,-40,-30,-20,-10,0,10,20,30,40,50];
+function polar(c,r){ const rad=(c/50)*MAX_ANGLE*Math.PI/180; return { x:PIVOT+r*Math.sin(rad), y:PIVOT-r*Math.cos(rad) }; }
+
+function renderGauge(){
+  const T = THEME[state.theme];
+  const c = Math.max(-50, Math.min(50, state.cents));
+  const inTune = state.active && Math.abs(c) <= 5;
+  const angle = (c/50)*MAX_ANGLE;
+
+  const needleColor = !state.active ? T.faint : inTune ? SUCCESS : Math.abs(c)<15 ? state.accent : T.soft;
+  const a=polar(-50,RADIUS), b=polar(50,RADIUS);
+
+  let ticks='';
+  for(const t of TICKS){
+    const isZero=t===0, isMajor=t%50===0;
+    const o=polar(t,RADIUS), i=polar(t, isZero?66:isMajor?70:74);
+    const col = isZero ? (inTune?SUCCESS:state.accent) : T.faint;
+    ticks += `<line x1="${o.x}" y1="${o.y}" x2="${i.x}" y2="${i.y}" stroke="${col}" stroke-width="${isZero?3:isMajor?2:1.5}" stroke-linecap="round"/>`;
+  }
+
+  document.getElementById('gauge').innerHTML = `
+    <path d="M${a.x} ${a.y} A${RADIUS} ${RADIUS} 0 0 1 ${b.x} ${b.y}" fill="none" stroke="${T.border}" stroke-width="4" stroke-linecap="round"/>
+    ${ticks}
+    <circle cx="${PIVOT}" cy="${PIVOT}" r="13" fill="${SUCCESS}" opacity="${inTune?0.25:0}"/>
+    <g transform="rotate(${angle.toFixed(2)} ${PIVOT} ${PIVOT})">
+      <line x1="${PIVOT}" y1="${PIVOT}" x2="${PIVOT}" y2="${PIVOT-RADIUS+6}" stroke="${needleColor}" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <circle cx="${PIVOT}" cy="${PIVOT}" r="5" fill="${needleColor}"/>`;
+}
+
+// ---------- render geral ----------
+function renderPreview(){
+  document.documentElement.style.setProperty('--ui-accent', state.accent);
+  const T = THEME[state.theme];
+  const c = state.cents, inTune = state.active && Math.abs(c) <= 5;
+
+  const phone = document.getElementById('phone');
+  phone.style.background = T.bg; phone.style.color = T.text; phone.style.borderColor = T.border;
+
+  const note = document.getElementById('note');
+  note.style.color = inTune ? SUCCESS : T.text;
+  note.style.opacity = state.active ? 1 : 0.4;
+  document.getElementById('solf').style.color = T.soft;
+  document.getElementById('hz').style.color = T.faint;
+  document.querySelector('.meta').style.opacity = state.active ? 1 : 0.4;
+
+  const sign = c>0 ? '+' : c<0 ? '−' : '';
+  const centsStr = `${sign}${Math.abs(c)} ¢`;
+  const cv = document.getElementById('centsVal');
+  cv.textContent = centsStr; cv.style.color = inTune ? SUCCESS : T.soft;
+  cv.style.opacity = state.active ? 1 : 0.4;
+
+  const st = document.getElementById('status');
+  if (inTune){ st.textContent='Afinado'; st.style.color=SUCCESS; }
+  else if (c<0){ st.textContent='Muito grave · aperte a corda'; st.style.color=state.accent; }
+  else { st.textContent='Muito agudo · afrouxe a corda'; st.style.color=state.accent; }
+  st.style.opacity = state.active ? 1 : 0.4;
+
+  // sync sliders/hex/labels
+  document.getElementById('cL').textContent = centsStr;
+  document.getElementById('hexChip').style.background = state.accent;
+  if (document.activeElement.id !== 'hex') document.getElementById('hex').value = state.accent;
+
+  renderGauge();
+}
+
+function updatePrompt(){
+  const parts = [];
+  if (state.accent.toLowerCase() !== DEFAULTS.accent){
+    parts.push(`Troque a cor de destaque (\`brand\`) do afinador para \`${state.accent}\`.`);
+    parts.push(`Atualize \`ACCENT.brand\` em \`src/lib/theme/tokens.ts\` e o token \`brand\` correspondente na config do Tailwind (classes \`text-brand\`). O verde de "afinado" (\`success\` ${SUCCESS}) permanece inalterado.`);
+  } else {
+    parts.push(`Mantenha a cor de destaque atual (coral \`#f36458\`).`);
+  }
+  document.getElementById('prompt').textContent = parts.join(' ');
+}
+
+function updateAll(){ renderPreview(); updatePrompt(); }
+
+// ---------- wiring ----------
+function setAccent(hex){
+  state.accent = hex;
+  const {h,s,l} = hexToHsl(hex);
+  document.getElementById('h').value=h; document.getElementById('s').value=s; document.getElementById('l').value=l;
+  document.getElementById('hL').textContent=h+'°';
+  document.getElementById('sL').textContent=s+'%';
+  document.getElementById('lL').textContent=l+'%';
+  document.querySelectorAll('#presets .swatch').forEach(el=>el.dataset.on = el.dataset.hex.toLowerCase()===hex.toLowerCase()?'1':'0');
+  updateAll();
+}
+
+// presets
+const pc = document.getElementById('presets');
+PRESETS.forEach(p=>{
+  const b=document.createElement('button'); b.className='swatch'; b.dataset.hex=p.hex;
+  b.innerHTML=`<span class="dot" style="background:${p.hex}"></span><span class="nm">${p.nm}</span>`;
+  b.onclick=()=>setAccent(p.hex); pc.appendChild(b);
+});
+
+// hsl sliders
+function fromSliders(){
+  const h=+document.getElementById('h').value, s=+document.getElementById('s').value, l=+document.getElementById('l').value;
+  document.getElementById('hL').textContent=h+'°';
+  document.getElementById('sL').textContent=s+'%';
+  document.getElementById('lL').textContent=l+'%';
+  state.accent = hslToHex(h,s,l);
+  document.querySelectorAll('#presets .swatch').forEach(el=>el.dataset.on='0');
+  updateAll();
+}
+['h','s','l'].forEach(id=>document.getElementById(id).addEventListener('input',fromSliders));
+
+// hex input
+document.getElementById('hex').addEventListener('input', e=>{ if(isHex(e.target.value)) setAccent(e.target.value); });
+
+// theme + active segmented
+document.getElementById('theme').addEventListener('click', e=>{ const v=e.target.dataset.v; if(!v)return;
+  state.theme=v; [...e.currentTarget.children].forEach(b=>b.dataset.on=b.dataset.v===v?'1':'0'); updateAll(); });
+document.getElementById('active').addEventListener('click', e=>{ const v=e.target.dataset.v; if(v==null)return;
+  state.active=v==='1'; [...e.currentTarget.children].forEach(b=>b.dataset.on=b.dataset.v===v?'1':'0'); updateAll(); });
+
+// cents slider
+document.getElementById('c').addEventListener('input', e=>{ state.cents=+e.target.value; updateAll(); });
+
+// copy
+document.getElementById('copy').addEventListener('click', async ()=>{
+  await navigator.clipboard.writeText(document.getElementById('prompt').textContent);
+  const btn=document.getElementById('copy'), t=btn.textContent; btn.textContent='Copiado!';
+  setTimeout(()=>btn.textContent=t,1200);
+});
+
+// reaplica o estado autoritativo após o load (alguns navegadores restauram
+// valores de inputs no reload e sobrescreveriam os defaults).
+function applyDefaults(){ setAccent(DEFAULTS.accent); document.getElementById('c').value = DEFAULTS.cents; state.cents = DEFAULTS.cents; updateAll(); }
+applyDefaults();
+window.addEventListener('pageshow', applyDefaults);
+</script>
