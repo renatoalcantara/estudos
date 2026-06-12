@@ -47,16 +47,17 @@ export function TunerPage() {
   }, [start])
 
   return (
-    <div className="flex flex-col gap-5 px-4 pb-6">
+    <div className="flex h-full flex-col px-4">
       <PageHeader title="Afinador" eyebrow={mode === 'chromatic' ? 'Cromático' : instrument.name} />
 
       {running ? (
-        <>
+        <div className="flex min-h-0 flex-1 flex-col pb-2">
           {/* Acima do ponteiro só há elementos constantes nos dois modos → o
               ponteiro fica fixo ao alternar Instrumento/Cromático na navbar. */}
           <LevelMeter level={tuner.level} />
 
-          <div className="flex flex-col items-center gap-3 pt-1">
+          {/* Área do ponteiro: flexível e centralizada (absorve a sobra de espaço). */}
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2">
             <TunerGauge
               cents={tuner.reading?.cents ?? null}
               inTune={tuner.reading?.inTune ?? false}
@@ -68,7 +69,7 @@ export function TunerPage() {
 
           {/* Seletores abaixo do ponteiro (só no modo Instrumento). */}
           {mode === 'instrument' && (
-            <div className="flex animate-fade-in flex-col gap-4">
+            <div className="flex animate-fade-in flex-col gap-3">
               <InstrumentSelector value={instrumentId} onChange={setInstrumentId} />
               <StringSelector
                 strings={strings}
@@ -79,9 +80,9 @@ export function TunerPage() {
               />
             </div>
           )}
-        </>
+        </div>
       ) : (
-        <div className="pt-10">
+        <div className="flex min-h-0 flex-1 items-center justify-center">
           <MicPermissionPrompt state={tuner.micState} error={tuner.error} onStart={start} />
         </div>
       )}

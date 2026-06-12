@@ -87,7 +87,7 @@ export function TunerGauge({ cents, inTune, active }: TunerGaugeProps) {
   return (
     <svg
       viewBox="0 0 200 116"
-      className="w-full max-w-sm"
+      className="w-full max-w-xs"
       role="img"
       aria-label={
         cents == null ? 'Medidor de afinação sem sinal' : `Desvio de ${Math.round(c)} cents`

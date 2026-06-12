@@ -10,7 +10,7 @@ export function NoteDisplay({ reading, silent }: NoteDisplayProps) {
   if (!reading) {
     return (
       <div className="flex flex-col items-center">
-        <div className="text-7xl font-semibold tracking-display text-text-faint">—</div>
+        <div className="text-6xl font-semibold tracking-display text-text-faint">—</div>
         <p className="mt-1 text-sm text-text-faint">Toque uma corda</p>
       </div>
     )
@@ -31,10 +31,10 @@ export function NoteDisplay({ reading, silent }: NoteDisplayProps) {
             inTune ? 'text-success' : 'text-text'
           }`}
         >
-          <span className="text-7xl font-semibold leading-none tracking-display">
+          <span className="text-6xl font-semibold leading-none tracking-display">
             {note.noteName}
           </span>
-          <span className="ml-1 mt-2 text-2xl font-medium opacity-70">{note.octave}</span>
+          <span className="ml-1 mt-1 text-xl font-medium opacity-70">{note.octave}</span>
         </div>
       </div>
       <div className="mt-2 flex items-baseline gap-3">
