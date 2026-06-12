@@ -19,7 +19,7 @@ export default {
         'text-soft': 'var(--c-text-soft)',
         'text-faint': 'var(--c-text-faint)',
         border: 'var(--c-border)',
-        brand: { DEFAULT: '#f36458', deep: '#dd0000' },
+        brand: { DEFAULT: '#6366f1', deep: '#dd0000' },
         success: '#37cd84',
         error: '#dd0000',
         link: '#0052ef',
