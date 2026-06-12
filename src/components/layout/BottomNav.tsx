@@ -121,9 +121,11 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="safe-bottom safe-x pointer-events-none pb-3 pt-2">
-      {/* px-4 num wrapper separado: no mesmo elemento, o safe-x (env=0 no
-          portrait) sobrescreveria o padding e a barra colaria nas bordas. */}
+    <nav className="safe-x pointer-events-none pt-2 pb-[max(0.5rem,calc(env(safe-area-inset-bottom)-0.75rem))]">
+      {/* Espaçamento inferior único (sem colisão safe-bottom+pb): cola a barra
+          perto do fundo no PWA standalone — reduz o inset do indicador home,
+          mantendo um clearance mínimo. px-4 num wrapper separado porque, na
+          mesma tag, o safe-x (env=0 no portrait) sobrescreveria o padding. */}
       <div className="px-4">
         <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface p-1.5 shadow-soft">
         {/* Pílula deslizante (índigo) com o conteúdo do item ativo. */}
