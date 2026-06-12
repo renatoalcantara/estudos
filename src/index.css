@@ -2,25 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tokens semânticos (DESIGN.md "sanity"): claro por padrão, escuro via .dark */
+/* Tokens semânticos + material tátil ("instrumento premium").
+   Neutros levemente quentes (nunca preto/branco puros); luz direcional de cima
+   guia as sombras de relevo (raised) e os recuos (well). Índigo = acento ativo. */
 :root {
-  --c-bg: #ffffff;
+  --c-bg: #f4f1ec;
   --c-surface: #ffffff;
-  --c-surface-2: #ededed;
-  --c-text: #0b0b0b;
-  --c-text-soft: #505b6c;
-  --c-text-faint: #797979;
-  --c-border: #ededed;
+  --c-surface-2: #e9e4db;
+  --c-text: #1a1613;
+  --c-text-soft: #5c574f;
+  --c-text-faint: #938d83;
+  --c-border: #e3ddd3;
+  --c-brand: #6366f1;
+
+  /* material do dial / chips */
+  --dial-face: #ffffff;
+  --dial-well: #e8e2d8;
+  --dial-sheen: rgba(255, 255, 255, 0.9);
+  --sh-raised: 0 14px 30px -12px rgba(60, 45, 30, 0.28), 0 3px 8px -3px rgba(60, 45, 30, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --sh-well: inset 0 2px 7px rgba(60, 45, 30, 0.18), inset 0 -1px 0 rgba(255, 255, 255, 0.65);
+  --sh-chip: 0 2px 5px -2px rgba(60, 45, 30, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .dark {
-  --c-bg: #0b0b0b;
-  --c-surface: #212121;
-  --c-surface-2: #353535;
-  --c-text: #ffffff;
-  --c-text-soft: #b9b9b9;
-  --c-text-faint: #797979;
-  --c-border: #353535;
+  --c-bg: #141210;
+  --c-surface: #1e1b17;
+  --c-surface-2: #2a2620;
+  --c-text: #f6f2ec;
+  --c-text-soft: #b4ada2;
+  --c-text-faint: #7c756a;
+  --c-border: #2c2820;
+  --c-brand: #6366f1;
+
+  --dial-face: #201c18;
+  --dial-well: #0d0b0a;
+  --dial-sheen: rgba(255, 255, 255, 0.06);
+  --sh-raised: 0 16px 34px -12px rgba(0, 0, 0, 0.72), 0 3px 8px -3px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --sh-well: inset 0 3px 9px rgba(0, 0, 0, 0.62), inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --sh-chip: 0 2px 6px -2px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* Tudo no MESMO viewport (dinâmico) para a navbar colar na base visível e não
@@ -49,6 +70,26 @@ body {
   text-rendering: optimizeLegibility;
   /* evita realce azul ao tocar em botões no mobile */
   -webkit-tap-highlight-color: transparent;
+}
+
+@layer components {
+  /* Poço recuado onde o dial assenta (sombra interna, luz embaixo). */
+  .dial-well {
+    background: var(--dial-well);
+    box-shadow: var(--sh-well);
+    border-radius: 9999px;
+  }
+  /* Face elevada do dial: brilho sutil no topo (luz direcional) + relevo. */
+  .dial-face {
+    background: radial-gradient(120% 130% at 50% 0%, var(--dial-sheen), transparent 55%),
+      var(--dial-face);
+    box-shadow: var(--sh-raised);
+    border-radius: 9999px;
+  }
+  /* Relevo tátil para chips/pegs ativos. */
+  .elev-chip {
+    box-shadow: var(--sh-chip);
+  }
 }
 
 @layer utilities {
