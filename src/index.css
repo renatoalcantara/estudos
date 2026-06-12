@@ -29,6 +29,14 @@ body,
   height: 100%;
 }
 
+/* Comportamento de app: o documento não rola nem faz "rubber-band" (elástico).
+   Só áreas internas rolam (ex.: textos de Ajustes), sem encadear o bounce. */
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   background: var(--c-bg);
