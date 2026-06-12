@@ -1,7 +1,7 @@
 // Conteúdo da tela "Sobre". Edite livremente — sem necessidade de mexer em componentes.
 export const ABOUT = {
   appName: 'Afinador',
-  version: '0.1.0',
+  version: '1.0.0',
   creator: 'Renato Alcântara',
   siteUrl: 'https://alcantara.design',
   siteLabel: 'alcantara.design',

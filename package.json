@@ -1,7 +1,7 @@
 {
   "name": "afinador",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Afinador de violão, guitarra, ukulele e baixo (PWA, pt-BR)",
   "scripts": {
