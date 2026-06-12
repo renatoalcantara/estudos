@@ -112,7 +112,10 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="absolute inset-x-0 bottom-0 safe-x pointer-events-none pt-2 pb-[env(safe-area-inset-bottom,0px)]">
+    <nav
+      className="absolute inset-x-0 bottom-0 safe-x pointer-events-none pt-2"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + var(--nav-debug-offset, 0px))' }}
+    >
       {/* absolute bottom-0 (não sticky/fixed): ancorado no fundo do container de
           100dvh. Folga inferior = o safe-area-inset (rente ao fundo onde é 0, e
           só o necessário acima do indicador home no iOS). px-4 num wrapper
