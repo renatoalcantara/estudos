@@ -4,23 +4,23 @@ export const TERMS = {
   sections: [
     {
       title: 'Aceitação',
-      body: 'Ao usar o Afinador, você concorda com estes Termos de Uso. Se não concordar, por favor não utilize o aplicativo.',
+      body: 'Usando o Afinador, você topa estas regras. Se não rolar, sem ressentimento: é só não usar.',
     },
     {
       title: 'Uso do aplicativo',
-      body: 'O Afinador é fornecido gratuitamente, "como está", para auxiliar na afinação de instrumentos musicais. Não garantimos exatidão absoluta da detecção, que depende do microfone, do ambiente e do instrumento.',
+      body: 'O app é de graça e vem "como está". Faço o meu melhor pra detecção ser precisa, mas ela depende do microfone, do ambiente e do instrumento, então não dá pra prometer 100%.',
     },
     {
       title: 'Microfone',
-      body: 'O app solicita acesso ao microfone apenas para detectar a afinação em tempo real. O áudio é processado localmente e não é gravado nem transmitido.',
+      body: 'O microfone é usado só pra ouvir a nota e te ajudar a afinar. O áudio fica no seu aparelho: nada é gravado nem enviado.',
     },
     {
       title: 'Limitação de responsabilidade',
-      body: 'O criador não se responsabiliza por eventuais danos decorrentes do uso do aplicativo, incluindo afinações incorretas.',
+      body: 'Não me responsabilizo por imprevistos decorrentes do uso do app (incluindo aquela corda que insistiu em desafinar). Use com bom senso.',
     },
     {
       title: 'Alterações',
-      body: 'Estes termos podem ser atualizados periodicamente. O uso contínuo do app após mudanças implica concordância com a versão vigente.',
+      body: 'Posso ajustar estes termos de tempos em tempos. Continuar usando depois das mudanças quer dizer que tá tudo certo entre a gente.',
     },
   ],
 }

@@ -4,13 +4,13 @@ import { PageHeader } from '../../components/ui/PageHeader'
 import { CONTACT_EMAIL } from '../paths'
 
 export function ContactPage() {
-  const subject = encodeURIComponent('Afinador — contato')
+  const subject = encodeURIComponent('Oi, vim pelo Afinador')
   return (
     <div className="flex flex-col gap-5 px-4 pb-6">
-      <PageHeader title="Fale conosco" back />
+      <PageHeader title="Fala comigo" back sticky />
 
       <p className="px-1 text-text-soft">
-        Encontrou um problema, tem uma sugestão ou só quer dizer oi? Adoramos receber feedback.
+        Achou um bug, tem uma sugestão, ou só quer dar um oi? Manda que eu leio tudo (e respondo).
       </p>
 
       <Card className="flex flex-col gap-3">
@@ -24,7 +24,7 @@ export function ContactPage() {
             window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}`
           }}
         >
-          Enviar e-mail
+          Mandar e-mail
         </Button>
       </Card>
     </div>

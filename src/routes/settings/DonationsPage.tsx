@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { PageHeader } from '../../components/ui/PageHeader'
-import { Toast } from '../../components/ui/Toast'
 import { DONATIONS, pixQrValue } from '../../content/donations'
 import { trackEvent } from '../../lib/analytics/analytics'
 
@@ -31,12 +30,10 @@ async function copyText(text: string): Promise<boolean> {
 
 export function DonationsPage() {
   const [copied, setCopied] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
 
   const copyKey = async () => {
     if (!(await copyText(DONATIONS.pixKey))) return
     setCopied(true)
-    setToast('Pronto, chave copiada 💜')
     // Intenção de doar: copiar a chave Pix é o sinal mais forte de conversão.
     trackEvent('donation_copy_pix')
     setTimeout(() => setCopied(false), 2000)
@@ -44,7 +41,7 @@ export function DonationsPage() {
 
   return (
     <div className="flex flex-col gap-5 px-4 pb-6">
-      <PageHeader title="Doações" back />
+      <PageHeader title="Doações" back sticky />
 
       <p className="px-1 text-text-soft">{DONATIONS.intro}</p>
 
@@ -68,8 +65,6 @@ export function DonationsPage() {
       <p className="px-1 text-center text-xs text-text-faint">
         Aponta a câmera do banco no QR, ou usa a chave aí de cima.
       </p>
-
-      <Toast message={toast} onDismiss={() => setToast(null)} />
     </div>
   )
 }

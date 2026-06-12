@@ -4,7 +4,7 @@ import { ABOUT } from '../../content/about'
 export function AboutPage() {
   return (
     <div className="flex flex-col gap-4 px-4 pb-6">
-      <PageHeader title="Sobre" back />
+      <PageHeader title="Sobre" back sticky />
       <div className="flex flex-col gap-4 px-1">
         <div>
           <h2 className="text-xl font-semibold text-text">{ABOUT.appName}</h2>
