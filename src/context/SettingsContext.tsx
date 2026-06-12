@@ -94,7 +94,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement
     root.classList.toggle('dark', resolvedTheme === 'dark')
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', resolvedTheme === 'dark' ? '#0b0b0b' : '#ffffff')
+    if (meta) meta.setAttribute('content', resolvedTheme === 'dark' ? '#141210' : '#f4f1ec')
     // Propriedade de usuário: tema em uso (responde "tema mais utilizado",
     // inclusive para quem nunca troca e fica no padrão 'system').
     setUserProperties({ theme: theme, theme_resolved: resolvedTheme })

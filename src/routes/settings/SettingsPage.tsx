@@ -1,3 +1,4 @@
+import { InstallCard } from '../../components/settings/InstallCard'
 import { Card } from '../../components/ui/Card'
 import { ListRow } from '../../components/ui/ListRow'
 import { PageHeader } from '../../components/ui/PageHeader'
@@ -19,11 +20,13 @@ export function SettingsPage() {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="flex flex-col gap-6 px-4 pb-6">
-      <PageHeader title="Ajustes" />
+    <div className="flex flex-col gap-6 px-4 pb-[var(--nav-h)]">
+      <PageHeader title="Ajustes" sticky />
+
+      <InstallCard />
 
       <section>
-        <SectionTitle>Aparência</SectionTitle>
+        <SectionTitle>Visual</SectionTitle>
         <Card className="flex flex-col gap-3 p-4">
           <span className="text-text">Tema</span>
           <SegmentedControl<ThemeChoice>
@@ -40,24 +43,24 @@ export function SettingsPage() {
       </section>
 
       <section>
-        <SectionTitle>Sobre & contato</SectionTitle>
+        <SectionTitle>Sobre & recados</SectionTitle>
         <div className="overflow-hidden rounded-marketing border border-border">
-          <ListRow to={PATHS.about} title="Sobre o app" subtitle="Quem criou e o que é" />
-          <ListRow to={PATHS.donations} title="Doações" subtitle="Apoie o projeto via Pix" />
-          <ListRow to={PATHS.contact} title="Fale conosco" subtitle="Envie sugestões e feedback" />
+          <ListRow to={PATHS.about} title="Sobre" subtitle="A história por trás" />
+          <ListRow to={PATHS.donations} title="Doações" subtitle="Me paga um cafezinho? (Pix) ☕" />
+          <ListRow to={PATHS.contact} title="Fala comigo" subtitle="Manda ideia, bug ou só um oi" />
         </div>
       </section>
 
       <section>
-        <SectionTitle>Legal</SectionTitle>
+        <SectionTitle>Letrinhas miúdas</SectionTitle>
         <div className="overflow-hidden rounded-marketing border border-border">
-          <ListRow to={PATHS.terms} title="Termos de uso" />
-          <ListRow to={PATHS.privacy} title="Política de privacidade" />
+          <ListRow to={PATHS.terms} title="Termos de uso" subtitle="As regras do jogo" />
+          <ListRow to={PATHS.privacy} title="Privacidade" subtitle="O que rola com seus dados" />
         </div>
       </section>
 
       <p className="px-1 text-center text-xs text-text-faint">
-        {ABOUT.appName} · versão {ABOUT.version}
+        {ABOUT.appName} · v{ABOUT.version} · feito com carinho 🎸
       </p>
     </div>
   )

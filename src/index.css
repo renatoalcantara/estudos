@@ -15,6 +15,12 @@
   --c-border: #e3ddd3;
   --c-brand: #6366f1;
 
+  /* Altura do nav inferior + respiro, usada como padding-bottom nas páginas que
+     rolam (o nav é absolute, então o conteúdo precisa reservar esse espaço para
+     não terminar atrás dele). Espelha o padding do nav: pt-2 (8px) + pílula
+     (56px) + paddingBottom (max(env*0.4,10px)+16px) + 24px de respiro. */
+  --nav-h: calc(104px + max(env(safe-area-inset-bottom, 0px) * 0.4, 10px));
+
   /* material do dial / chips */
   --dial-face: #ffffff;
   --dial-well: #e8e2d8;

@@ -4,31 +4,31 @@ export const PRIVACY = {
   sections: [
     {
       title: 'Em resumo',
-      body: 'O Afinador é leve e não pede cadastro nem dados pessoais. O áudio do microfone nunca sai do seu aparelho. Para entender como o app é usado e melhorá-lo, coletamos métricas de uso anônimas (veja "Análise de uso").',
+      body: 'Sem cadastro, sem pedir seus dados. O áudio do seu microfone nunca sai do aparelho. Pra eu saber o que melhorar, coleto só umas métricas de uso anônimas (detalhe logo abaixo).',
     },
     {
       title: 'Áudio do microfone',
-      body: 'O áudio captado pelo microfone é processado em tempo real, exclusivamente no seu aparelho, apenas para detectar a frequência da nota. Ele nunca é gravado, armazenado ou enviado para qualquer servidor.',
+      body: 'O som captado é processado na hora, só aí no seu aparelho, pra detectar a nota. Não é gravado, não é guardado, não vai pra lugar nenhum.',
     },
     {
-      title: 'Dados armazenados localmente',
-      body: 'Suas preferências (tema, instrumento e referência A4) são salvas no armazenamento local do navegador, no seu próprio dispositivo. Você pode apagá-las limpando os dados do site.',
+      title: 'Dados no seu aparelho',
+      body: 'Só suas preferências (tema, instrumento e o A4) ficam salvas no seu navegador. Quer apagar? Limpa os dados do site e pronto.',
     },
     {
       title: 'Análise de uso',
-      body: 'Usamos o Google Analytics e o Microsoft Clarity para medir o uso do app (telas visitadas, eventos de interface e gravações anônimas da navegação, como cliques e toques) e assim melhorá-lo. Esses serviços podem usar cookies e coletar dados técnicos do dispositivo e de uso. Nenhum áudio é enviado e não vinculamos esses dados à sua identidade.',
+      body: 'Uso o Google Analytics e o Microsoft Clarity pra ver como o app é usado (telas visitadas, cliques e gravações anônimas da navegação) e melhorar. Eles podem usar cookies e dados técnicos do aparelho. Nenhum áudio é enviado, e nada disso te identifica.',
     },
     {
       title: 'Como recusar',
-      body: 'Você pode bloquear esses serviços usando as configurações do navegador (bloqueio de cookies/rastreadores), uma extensão de privacidade, ou limpando os dados do site. Isso não afeta o funcionamento do afinador.',
+      body: 'Não curte? Bloqueia cookies/rastreadores nas configurações do navegador ou usa uma extensão de privacidade. O afinador funciona igualzinho.',
     },
     {
       title: 'Outros terceiros',
-      body: 'O app também carrega fontes da web (Google Fonts) para a interface. Nenhum dado é compartilhado para fins de publicidade.',
+      body: 'O app também carrega fontes da web (Google Fonts) pra interface. Nada é compartilhado pra fins de publicidade.',
     },
     {
       title: 'Contato',
-      body: 'Dúvidas sobre privacidade? Fale com a gente pela tela "Fale conosco".',
+      body: 'Dúvida sobre privacidade? Me chama no "Fala comigo".',
     },
   ],
 }

@@ -6,7 +6,11 @@ interface TuningSelectorProps {
   onChange: (id: string) => void
 }
 
-/** Seletor de afinação em chips roláveis. Só renderiza quando há mais de uma opção. */
+/**
+ * Seletor de afinação em chips roláveis. Só renderiza quando há mais de uma
+ * opção. Full-bleed: -mx-5 nega o px-5 do bottom sheet (rola até a borda da
+ * tela); px-5 reinsere a margem, então a primeira pílula respeita o recuo.
+ */
 export function TuningSelector({ tunings, value, onChange }: TuningSelectorProps) {
   if (tunings.length <= 1) return null
 
@@ -14,7 +18,7 @@ export function TuningSelector({ tunings, value, onChange }: TuningSelectorProps
     <div
       role="radiogroup"
       aria-label="Afinação"
-      className="flex gap-2 overflow-x-auto px-1 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-5 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       {tunings.map((t) => {
         const active = t.id === value

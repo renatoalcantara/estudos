@@ -6,13 +6,17 @@ interface InstrumentSelectorProps {
   onChange: (id: InstrumentId) => void
 }
 
-/** Seletor de instrumento em chips roláveis. */
+/**
+ * Seletor de instrumento em chips roláveis. Full-bleed: -mx-5 nega o px-5 do
+ * bottom sheet (rola até a borda da tela); px-5 reinsere a margem, então a
+ * primeira pílula respeita o recuo.
+ */
 export function InstrumentSelector({ value, onChange }: InstrumentSelectorProps) {
   return (
     <div
       role="radiogroup"
       aria-label="Instrumento"
-      className="flex gap-2 overflow-x-auto px-1 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-5 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       {INSTRUMENT_LIST.map((inst) => {
         const active = inst.id === value

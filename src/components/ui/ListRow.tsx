@@ -29,7 +29,7 @@ function Body({ icon, title, subtitle, trailing }: Omit<ListRowProps, 'to' | 'hr
     <>
       {icon && <span className="text-text-soft">{icon}</span>}
       <span className="flex-1 min-w-0">
-        <span className="block truncate text-text">{title}</span>
+        <span className="block truncate font-semibold text-text">{title}</span>
         {subtitle && <span className="block truncate text-sm text-text-faint">{subtitle}</span>}
       </span>
       <span className="text-text-faint">{trailing ?? <Chevron />}</span>

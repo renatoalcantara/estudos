@@ -9,6 +9,8 @@ interface PageHeaderProps {
   eyebrow?: string
   /** torna o título um botão (abre seleção de instrumento/afinação) */
   onTitlePress?: () => void
+  /** fixa o header no topo durante a rolagem (com fundo opaco) */
+  sticky?: boolean
 }
 
 function BackArrow() {
@@ -39,10 +41,14 @@ function ChevronDown() {
   )
 }
 
-export function PageHeader({ title, back = false, eyebrow, onTitlePress }: PageHeaderProps) {
+export function PageHeader({ title, back = false, eyebrow, onTitlePress, sticky = false }: PageHeaderProps) {
   const navigate = useNavigate()
   return (
-    <header className="flex items-center gap-2 px-4 pb-2 pt-1">
+    <header
+      className={`flex items-center gap-2 px-4 pb-2 pt-1 ${
+        sticky ? 'sticky top-0 z-20 bg-bg' : ''
+      }`}
+    >
       {back && (
         <button
           onClick={() => navigate(-1)}

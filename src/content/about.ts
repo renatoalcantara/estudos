@@ -3,9 +3,11 @@ export const ABOUT = {
   appName: 'Afinador',
   version: '0.1.0',
   creator: 'Renato Alcântara',
+  siteUrl: 'https://alcantara.design',
+  siteLabel: 'alcantara.design',
   paragraphs: [
-    'O Afinador é um app simples e gratuito para afinar violão, guitarra, ukulele e baixo usando o microfone do seu aparelho.',
-    'Todo o processamento do áudio acontece localmente, no seu dispositivo — nada é gravado ou enviado para a internet.',
-    'Criado por Renato Alcântara. Sugestões e feedback são muito bem-vindos pela tela "Fale conosco".',
+    'Um afinador gratuito e sem anúncios pra violão, guitarra, ukulele e baixo, direto pelo microfone do celular.',
+    'A real é que eu cansei de abrir afinador e levar mais anúncio que afinação. Esse aqui é o oposto: abre e afina, sem propaganda no meio.',
+    'O áudio fica todo no seu aparelho: nada é gravado nem sai daqui. Feito pelo Renato, pra tocar com os amigos. Tem ideia ou achou um bug? Cai no "Fala comigo".',
   ],
 }
