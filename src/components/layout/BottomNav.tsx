@@ -125,11 +125,11 @@ export function BottomNav() {
       {/* px-4 num wrapper separado: no mesmo elemento, o safe-x (env=0 no
           portrait) sobrescreveria o padding e a barra colaria nas bordas. */}
       <div className="px-4">
-        <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-text p-1.5 shadow-soft dark:bg-brand">
-        {/* Pílula deslizante com o conteúdo do item ativo (ícone + rótulo). */}
+        <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface p-1.5 shadow-soft">
+        {/* Pílula deslizante (índigo) com o conteúdo do item ativo. */}
         <div
           aria-hidden="true"
-          className={`absolute flex h-11 items-center gap-2 rounded-full bg-bg px-4 text-text ${
+          className={`absolute flex h-11 items-center gap-2 rounded-full bg-brand px-4 text-white shadow-[0_2px_12px_-2px_rgba(99,102,241,0.55)] ${
             ready ? 'transition-[left,width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]' : ''
           }`}
           style={{ left: pill.left, width: pill.width }}
@@ -150,7 +150,7 @@ export function BottomNav() {
               aria-label={item.label}
               onClick={() => select(i)}
               className={`relative z-10 flex h-11 items-center justify-center rounded-full transition-colors duration-200 active:scale-90 ${
-                active ? 'gap-2 px-4 text-text' : 'w-11 text-text-faint hover:text-bg'
+                active ? 'gap-2 px-4 text-white' : 'w-11 text-text-faint hover:text-text'
               }`}
             >
               <Icon />
