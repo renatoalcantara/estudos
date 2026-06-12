@@ -30,16 +30,22 @@ export function TunerPage() {
 
   return (
     <div className="flex flex-col gap-5 px-4 pb-6">
-      <PageHeader title="Afinador" eyebrow={instrument.name} />
+      <PageHeader title="Afinador" eyebrow={mode === 'chromatic' ? 'Cromático' : instrument.name} />
 
-      <InstrumentSelector value={instrumentId} onChange={setInstrumentId} />
+      {/* 1º nível: modo (Instrumento / Cromático) */}
+      <div className="flex justify-center">
+        <ChromaticToggle mode={mode} onChange={setMode} />
+      </div>
+
+      {/* Instrumentos — só fazem sentido no modo Instrumento */}
+      {mode === 'instrument' && (
+        <div className="animate-fade-in">
+          <InstrumentSelector value={instrumentId} onChange={setInstrumentId} />
+        </div>
+      )}
 
       {running ? (
         <>
-          <div className="flex justify-center">
-            <ChromaticToggle mode={mode} onChange={setMode} />
-          </div>
-
           <LevelMeter level={tuner.level} />
 
           <div className="flex flex-col items-center gap-3 pt-1">
