@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { setUserProperties, trackEvent } from '../lib/analytics/analytics'
 import { DEFAULT_INSTRUMENT_ID } from '../lib/instruments/instruments'
 import type { InstrumentId } from '../lib/instruments/types'
 import { A4 } from '../lib/music/noteUtils'
@@ -94,11 +95,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.classList.toggle('dark', resolvedTheme === 'dark')
     const meta = document.querySelector('meta[name="theme-color"]')
     if (meta) meta.setAttribute('content', resolvedTheme === 'dark' ? '#0b0b0b' : '#ffffff')
-  }, [resolvedTheme])
+    // Propriedade de usuário: tema em uso (responde "tema mais utilizado",
+    // inclusive para quem nunca troca e fica no padrão 'system').
+    setUserProperties({ theme: theme, theme_resolved: resolvedTheme })
+  }, [resolvedTheme, theme])
 
   const setTheme = useCallback((t: ThemeChoice) => {
     setThemeState(t)
     localStorage.setItem(KEYS.theme, t)
+    trackEvent('select_theme', { theme: t })
   }, [])
 
   const tuningId = tuningsMap[instrumentId] ?? 'standard'
@@ -106,19 +111,25 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const setInstrumentId = useCallback((id: InstrumentId) => {
     setInstrumentIdState(id)
     localStorage.setItem(KEYS.instrument, id)
+    trackEvent('select_instrument', { instrument: id })
   }, [])
 
-  const setTuningId = useCallback((id: string) => {
-    setTuningsMap((prev) => {
-      const next = { ...prev, [instrumentId]: id }
-      localStorage.setItem(KEYS.tunings, JSON.stringify(next))
-      return next
-    })
-  }, [instrumentId])
+  const setTuningId = useCallback(
+    (id: string) => {
+      setTuningsMap((prev) => {
+        const next = { ...prev, [instrumentId]: id }
+        localStorage.setItem(KEYS.tunings, JSON.stringify(next))
+        return next
+      })
+      trackEvent('select_tuning', { instrument: instrumentId, tuning: id })
+    },
+    [instrumentId],
+  )
 
   const setMode = useCallback((m: TunerMode) => {
     setModeState(m)
     localStorage.setItem(KEYS.mode, m)
+    trackEvent('select_mode', { mode: m })
   }, [])
 
   const setA4 = useCallback((hz: number) => {

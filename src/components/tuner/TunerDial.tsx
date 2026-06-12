@@ -85,7 +85,10 @@ export function TunerDial({ reading, silent }: TunerDialProps) {
         className="dial-face relative h-full w-full transition-shadow duration-500"
         style={
           inTune
-            ? { boxShadow: 'var(--sh-raised), 0 0 0 2px var(--c-brand), 0 0 30px -4px var(--c-brand)' }
+            ? {
+                boxShadow:
+                  'var(--sh-raised), 0 0 0 12px var(--c-brand), 0 0 16px 1px rgba(99,102,241,0.9), 0 0 34px 6px rgba(99,102,241,0.6), 0 0 60px 14px rgba(99,102,241,0.35)',
+              }
             : undefined
         }
       >

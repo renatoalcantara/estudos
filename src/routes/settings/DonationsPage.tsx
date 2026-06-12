@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { DONATIONS, pixQrValue } from '../../content/donations'
+import { trackEvent } from '../../lib/analytics/analytics'
 
 export function DonationsPage() {
   const [copied, setCopied] = useState(false)
@@ -12,6 +13,8 @@ export function DonationsPage() {
     try {
       await navigator.clipboard.writeText(DONATIONS.pixKey)
       setCopied(true)
+      // Intenção de doar: copiar a chave Pix é o sinal mais forte de conversão.
+      trackEvent('donation_copy_pix')
       setTimeout(() => setCopied(false), 2000)
     } catch {
       // clipboard pode falhar sem HTTPS/permissão — ignora silenciosamente

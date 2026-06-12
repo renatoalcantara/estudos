@@ -80,6 +80,14 @@ export default {
           '0%': { transform: 'translateY(100%)' },
           '100%': { transform: 'translateY(0)' },
         },
+        'sheet-down': {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+        'fade-out': {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
       },
       animation: {
         'page-enter': 'page-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both',
@@ -90,6 +98,8 @@ export default {
         'pulse-soft': 'pulse-soft 2.2s ease-in-out infinite',
         'pop-in': 'pop-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both',
         'sheet-up': 'sheet-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both',
+        'sheet-down': 'sheet-down 260ms cubic-bezier(0.4, 0, 1, 1) both',
+        'fade-out': 'fade-out 260ms ease-in both',
       },
     },
   },

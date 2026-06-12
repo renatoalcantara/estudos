@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { InstrumentSheet } from '../components/tuner/InstrumentSheet'
 import { LevelMeter } from '../components/tuner/LevelMeter'
 import { MicPermissionPrompt } from '../components/tuner/MicPermissionPrompt'
@@ -7,6 +7,7 @@ import { TunerDial } from '../components/tuner/TunerDial'
 import { PageHeader } from '../components/ui/PageHeader'
 import { useSettings } from '../context/SettingsContext'
 import { useTuner } from '../hooks/useTuner'
+import { trackEvent } from '../lib/analytics/analytics'
 import { getActiveTuning, getInstrument } from '../lib/instruments/instruments'
 
 export function TunerPage() {
@@ -45,6 +46,27 @@ export function TunerPage() {
       cancelled = true
     }
   }, [start])
+
+  // Resultado da permissão do microfone (granted/denied/erro), uma vez por status.
+  const lastMicStatusRef = useRef<string | null>(null)
+  useEffect(() => {
+    const s = tuner.micState
+    const terminal = s === 'running' || s === 'denied' || s === 'error' || s === 'unsupported'
+    if (terminal && lastMicStatusRef.current !== s) {
+      lastMicStatusRef.current = s
+      trackEvent('mic_permission', { status: s })
+    }
+  }, [tuner.micState])
+
+  // Engajamento: dispara quando uma corda entra em "afinado" (transição).
+  const wasInTuneRef = useRef(false)
+  useEffect(() => {
+    const inTune = tuner.reading?.inTune ?? false
+    if (inTune && !wasInTuneRef.current) {
+      trackEvent('tuned_string', { target: tuner.reading?.targetLabel, mode })
+    }
+    wasInTuneRef.current = inTune
+  }, [tuner.reading?.inTune, tuner.reading?.targetLabel, mode])
 
   // Título = o que está sendo afinado (instrumento ou modo cromático);
   // eyebrow = nome do app. No modo instrumento o título abre o seletor.
