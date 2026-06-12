@@ -13,6 +13,9 @@ const base = isNative ? './' : '/'
 
 export default defineConfig({
   base,
+  // Expõe o dev server na rede local (0.0.0.0) — abra pelo IP da máquina no
+  // celular, ex.: http://192.168.x.x:5173. Útil pra testar o microfone no telefone.
+  server: { host: true },
   plugins: [
     react(),
     VitePWA({
