@@ -121,10 +121,10 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="safe-x pointer-events-none pb-1 pt-2">
-      {/* Espaçamento inferior pequeno e fixo: a barra flutuante cola perto do
-          fundo (sem navegador no PWA standalone, não há motivo pra folga grande
-          do inset). px-4 num wrapper separado porque, na mesma tag, o safe-x
+    <nav className="safe-x pointer-events-none pt-2 pb-[env(safe-area-inset-bottom)]">
+      {/* Folga inferior = exatamente o safe-area-inset (a safe area inteira):
+          rente ao fundo onde o inset é 0, e só o necessário acima do indicador
+          home no iOS. px-4 num wrapper separado porque, na mesma tag, o safe-x
           (env=0 no portrait) sobrescreveria o padding. */}
       <div className="px-4">
         <div className="pointer-events-auto relative mx-auto flex max-w-md items-center justify-between rounded-full border border-border bg-surface p-1.5 shadow-soft">
