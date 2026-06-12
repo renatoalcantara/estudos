@@ -229,19 +229,34 @@ export function useMicrophone(): MicHandle {
     if (FAKE_MIC) void start()
   }, [start])
 
-  // Ao voltar do segundo plano: retoma o contexto e readquire se a faixa morreu.
+  // Retoma o áudio depois de um período em segundo plano: resume o contexto
+  // (que o SO suspende) e readquire a faixa se ela morreu.
+  const recover = useCallback(() => {
+    if (!wantRunningRef.current || FAKE_MIC) return
+    const ctx = ctxRef.current
+    if (ctx && ctx.state === 'suspended') void ctx.resume().catch(() => {})
+    const track = streamRef.current?.getAudioTracks()[0]
+    if (!track || track.readyState === 'ended') void reacquire()
+  }, [reacquire])
+
+  // Ao voltar do segundo plano. No Android costuma retomar sozinho aqui.
   useEffect(() => {
     const onVisibility = () => {
-      if (document.visibilityState !== 'visible' || !wantRunningRef.current) return
-      const ctx = ctxRef.current
-      if (ctx && ctx.state === 'suspended') void ctx.resume()
-      if (FAKE_MIC) return // sinal de teste não depende de faixa de microfone
-      const track = streamRef.current?.getAudioTracks()[0]
-      if (!track || track.readyState === 'ended') void reacquire()
+      if (document.visibilityState === 'visible') recover()
     }
     document.addEventListener('visibilitychange', onVisibility)
     return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [reacquire])
+  }, [recover])
+
+  // No iOS o AudioContext suspenso só pode ser retomado DENTRO de um gesto do
+  // usuário (resume() fora de gesto é ignorado, e o visibilitychange não conta).
+  // Então retomamos no primeiro toque após voltar — sem isso a captação fica
+  // "rodando" mas muda, exigindo fechar e reabrir o app.
+  useEffect(() => {
+    const onGesture = () => recover()
+    document.addEventListener('pointerdown', onGesture)
+    return () => document.removeEventListener('pointerdown', onGesture)
+  }, [recover])
 
   // Encerra ao desmontar.
   useEffect(() => () => stop(), [stop])
