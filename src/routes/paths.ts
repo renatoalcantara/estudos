@@ -9,4 +9,7 @@ export const PATHS = {
   privacy: '/ajustes/privacidade',
 } as const
 
-export const CONTACT_EMAIL = 'xrenato@gmail.com'
+export const CONTACT_EMAIL = 'renato@alcantara.design'
+
+/** Chave Pix das doações — registrada no banco, independente do e-mail de contato. */
+export const PIX_KEY = 'xrenato@gmail.com'

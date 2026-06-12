@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '../routes/paths'
+import { PIX_KEY } from '../routes/paths'
 
 // Doações via Pix.
 // TODO: substituir `pixKey` pela chave Pix real e, se quiser um QR Pix oficial,
@@ -8,7 +8,7 @@ export const DONATIONS = {
   intro:
     'Esse app roda a café e boa vontade ☕. Se ele te salvou antes de um show, manda um Pix de qualquer valor. Vai pra gasolina dos próximos updates 🙏',
   pixKeyLabel: 'Chave Pix (é o meu e-mail)',
-  pixKey: CONTACT_EMAIL,
+  pixKey: PIX_KEY,
   pixPayload: '',
 }
 
