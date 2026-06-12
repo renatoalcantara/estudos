@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tokens semânticos (DESIGN.md "sanity"): claro por padrão, escuro via .dark */
+:root {
+  --c-bg: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface-2: #ededed;
+  --c-text: #0b0b0b;
+  --c-text-soft: #505b6c;
+  --c-text-faint: #797979;
+  --c-border: #ededed;
+}
+
+.dark {
+  --c-bg: #0b0b0b;
+  --c-surface: #212121;
+  --c-surface-2: #353535;
+  --c-text: #ffffff;
+  --c-text-soft: #b9b9b9;
+  --c-text-faint: #797979;
+  --c-border: #353535;
+}
+
+/* Tudo no MESMO viewport (dinâmico) para a navbar colar na base visível e não
+   sobrar fundo embaixo quando a barra do navegador aparece. 100vh é fallback. */
+html,
+body,
+#root {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Comportamento de app: o documento não rola nem faz "rubber-band" (elástico).
+   Só áreas internas rolam (ex.: textos de Ajustes), sem encadear o bounce. */
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* evita realce azul ao tocar em botões no mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-x {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* Respeita usuários que preferem menos movimento (acessibilidade). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
