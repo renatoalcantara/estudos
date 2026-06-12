@@ -46,7 +46,9 @@ export function TunerPage() {
     }
   }, [start])
 
-  const eyebrow =
+  // Título = o que está sendo afinado (instrumento ou modo cromático);
+  // eyebrow = nome do app. No modo instrumento o título abre o seletor.
+  const title =
     mode === 'chromatic'
       ? 'Cromático'
       : activeTuning.id === 'standard'
@@ -56,9 +58,9 @@ export function TunerPage() {
   return (
     <div className="flex h-full flex-col px-4">
       <PageHeader
-        title="Afinador"
-        eyebrow={eyebrow}
-        onEyebrowPress={mode === 'instrument' ? () => setSheetOpen(true) : undefined}
+        eyebrow="Afinador"
+        title={title}
+        onTitlePress={mode === 'instrument' ? () => setSheetOpen(true) : undefined}
       />
 
       {running ? (
