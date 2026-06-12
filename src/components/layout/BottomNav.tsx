@@ -121,7 +121,7 @@ export function BottomNav() {
   }
 
   return (
-    <nav className="safe-x pointer-events-none pb-2 pt-2">
+    <nav className="safe-x pointer-events-none pb-1 pt-2">
       {/* Espaçamento inferior pequeno e fixo: a barra flutuante cola perto do
           fundo (sem navegador no PWA standalone, não há motivo pra folga grande
           do inset). px-4 num wrapper separado porque, na mesma tag, o safe-x
